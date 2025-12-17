@@ -1,0 +1,257 @@
+You are an expert full-stack architect.
+
+Implement the COMPLETE Kaizen Risk Assessment & Approval System
+using the EXACT workflows, roles, UI behavior, reports, notifications,
+and approval logic defined previously.
+
+⚠️ IMPORTANT:
+- DO NOT change any functionality
+- DO NOT change workflow, approvals, or UI behavior
+- ONLY change the technology stack
+
+====================================
+1. TECHNOLOGY STACK (MANDATORY)
+====================================
+
+Frontend:
+- React JS (latest stable)
+- Material UI (MUI v5)
+- React Router
+- Axios for API calls
+- Context API or Redux Toolkit for state management
+- MUI DataGrid for tables
+- MUI Stepper for workflow visualization
+
+Backend:
+- Django
+- Django REST Framework (DRF)
+- PostgreSQL (preferred) or SQLite (dev)
+- Django ORM
+- Django Simple JWT for authentication
+- Celery (optional) for async notifications
+- Django Signals for audit logging
+
+====================================
+2. FRONTEND ARCHITECTURE (REACT + MUI)
+====================================
+
+------------------------------------
+2.1 APP STRUCTURE
+------------------------------------
+
+/src
+ ├── api/
+ │    ├── axios.js
+ │    ├── kaizenApi.js
+ │    ├── reportApi.js
+ │    ├── settingsApi.js
+ │
+ ├── components/
+ │    ├── common/
+ │    │    ├── StatusChip.jsx
+ │    │    ├── ConfirmDialog.jsx
+ │    │    ├── PageHeader.jsx
+ │    │
+ │    ├── kaizen/
+ │    │    ├── KaizenForm.jsx
+ │    │    ├── DepartmentEvaluation.jsx
+ │    │    ├── RequestDetail.jsx
+ │    │    ├── WorkflowStepper.jsx
+ │
+ │    ├── dashboards/
+ │    │    ├── InitiatorDashboard.jsx
+ │    │    ├── ManagerDashboard.jsx
+ │    │    ├── HodDashboard.jsx
+ │    │    ├── AgmDashboard.jsx
+ │    │    ├── GmDashboard.jsx
+ │
+ │    ├── reports/
+ │    │    ├── ReportLayout.jsx
+ │    │    ├── KaizenSummaryReport.jsx
+ │    │    ├── RiskExposureReport.jsx
+ │    │    ├── CostImpactReport.jsx
+ │
+ │    ├── settings/
+ │    │    ├── NotificationSettings.jsx
+ │
+ ├── pages/
+ │    ├── Login.jsx
+ │    ├── KaizenList.jsx
+ │
+ ├── routes/
+ │    ├── AppRoutes.jsx
+ │
+ └── App.jsx
+
+------------------------------------
+2.2 UI COMPONENT MAPPING
+------------------------------------
+
+| Feature | MUI Component |
+|------|--------------|
+| Forms | TextField, Select, Checkbox |
+| Tables | DataGrid |
+| Status | Chip, Badge |
+| Workflow | Stepper |
+| Dialogs | Dialog, Modal |
+| Tabs | Tabs, Tab |
+| Notifications | Snackbar, Alert |
+| Layout | Grid, Box, Card |
+
+UI layout, behavior, and screens must remain exactly the same as previously defined.
+
+====================================
+3. BACKEND ARCHITECTURE (DJANGO + DRF)
+====================================
+
+------------------------------------
+3.1 DJANGO APPS
+------------------------------------
+
+/backend
+ ├── kaizen/
+ │    ├── models.py
+ │    ├── serializers.py
+ │    ├── views.py
+ │    ├── urls.py
+ │
+ ├── users/
+ │    ├── models.py
+ │    ├── serializers.py
+ │    ├── permissions.py
+ │
+ ├── reports/
+ │    ├── views.py
+ │
+ ├── settings_app/
+ │    ├── models.py
+ │    ├── views.py
+ │
+ ├── notifications/
+ │    ├── services.py
+ │
+ ├── audit/
+ │    ├── models.py
+ │    ├── signals.py
+
+------------------------------------
+3.2 CORE DJANGO MODELS
+------------------------------------
+
+- User (extended AbstractUser)
+- Department
+- KaizenRequest
+- DepartmentEvaluation
+- ManagerApproval
+- HodApproval
+- AgmApproval
+- GmApproval
+- Attachment
+- AuditLog
+- NotificationSetting
+
+Use Django ORM relationships exactly reflecting the workflow.
+
+------------------------------------
+3.3 AUTH & PERMISSIONS
+------------------------------------
+
+- JWT Authentication
+- Custom DRF permissions:
+  - IsInitiator
+  - IsManager
+  - IsHOD
+  - IsAGM
+  - IsGM
+  - IsAdmin
+
+Permissions must enforce:
+- View all vs act only at assigned stage
+- Reject/Approve only when status matches role
+
+====================================
+4. API DESIGN (NO LOGIC CHANGE)
+====================================
+
+Use RESTful APIs matching existing logic:
+
+- POST /api/auth/login
+- POST /api/kaizen
+- GET /api/kaizen/{id}
+- POST /api/kaizen/{id}/own-hod-decision
+- POST /api/kaizen/{id}/manager-evaluation
+- POST /api/kaizen/{id}/cross-hod-evaluation
+- POST /api/kaizen/{id}/agm-decision
+- POST /api/kaizen/{id}/gm-decision
+- GET /api/reports/*
+- GET /api/settings/notifications
+- POST /api/settings/notifications/email
+- POST /api/settings/notifications/whatsapp
+
+All API responses must return:
+- current_status
+- next_pending_roles
+- allowed_actions
+
+====================================
+5. REPORT MODULE (SAME FUNCTIONALITY)
+====================================
+
+Reports must be implemented using:
+- DRF aggregated queries (annotate, values)
+- MUI DataGrid with filters & export
+
+NO report logic change.
+ONLY implementation change.
+
+====================================
+6. NOTIFICATION MODULE (SAME FUNCTIONALITY)
+====================================
+
+Backend:
+- Email → Django Email Backend
+- WhatsApp → Service wrapper (Twilio / Meta API)
+
+Frontend:
+- Simple toggle + credential form (MUI Switch + TextField)
+
+Admin can enable/disable notifications dynamically.
+
+====================================
+7. AUDIT TRAIL (MANDATORY)
+====================================
+
+Use Django Signals:
+- post_save
+- pre_save
+
+Every action must log:
+- User
+- Role
+- Department
+- Action
+- Timestamp
+- Remarks
+
+====================================
+8. ACCEPTANCE CRITERIA
+====================================
+
+✔ Workflow unchanged  
+✔ UI behavior unchanged  
+✔ Reports unchanged  
+✔ Role permissions unchanged  
+✔ Only tech stack changed  
+✔ React + MUI frontend  
+✔ Django REST backend  
+
+====================================
+9. FINAL OUTPUT REQUIRED
+====================================
+
+Generate:
+- React + MUI frontend code structure
+- Django REST backend models, serializers, views
+- JWT authentication
+- Sample seed data
+- API documentation
