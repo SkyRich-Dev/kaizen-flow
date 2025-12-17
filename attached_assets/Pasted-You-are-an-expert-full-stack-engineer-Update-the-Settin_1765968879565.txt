@@ -1,0 +1,209 @@
+You are an expert full-stack engineer.
+
+Update the **Settings → Notification module** to support **Email and WhatsApp notifications** with a **simple enable/disable configuration**, where the Admin only needs to enter credentials and activate the channel.
+
+Do NOT change:
+- Approval workflow
+- Notification trigger points
+- Audit trail logic
+
+Only update how notifications are configured, enabled, and sent.
+
+====================================
+1. OBJECTIVE
+====================================
+
+Allow Admin users to:
+- Enable or disable Email notifications
+- Enable or disable WhatsApp notifications
+- Enter required credentials
+- Test connectivity
+- Activate/deactivate channels instantly
+
+The configuration must be **simple**, **minimal**, and **non-technical**.
+
+====================================
+2. SETTINGS → NOTIFICATIONS UI
+====================================
+
+Create a **single Notification Settings page** with two cards:
+
+------------------------------------
+2.1 EMAIL NOTIFICATION CARD
+------------------------------------
+
+Fields:
+- Enable Email Notifications (Toggle: ON/OFF)
+
+Credentials Section (visible only when toggle = ON):
+- SMTP Host
+- SMTP Port
+- Sender Email ID
+- Sender Name
+- Username
+- Password / App Password
+- Use TLS (checkbox)
+
+Actions:
+- Save Settings
+- Test Email (send test mail to logged-in admin)
+
+Behavior:
+- If toggle = OFF:
+  - Email notifications must NOT be sent
+- If toggle = ON and credentials saved:
+  - System starts sending emails immediately
+
+------------------------------------
+2.2 WHATSAPP NOTIFICATION CARD
+------------------------------------
+
+Fields:
+- Enable WhatsApp Notifications (Toggle: ON/OFF)
+
+Credentials Section (visible only when toggle = ON):
+- WhatsApp Provider (dropdown: Twilio / Meta Cloud API / Other)
+- API URL
+- Account SID / Client ID
+- Auth Token / API Key
+- Sender WhatsApp Number
+- Default Country Code
+
+Actions:
+- Save Settings
+- Test WhatsApp Message (send test message to admin’s registered number)
+
+Behavior:
+- If toggle = OFF:
+  - WhatsApp notifications must NOT be sent
+- If toggle = ON and credentials saved:
+  - System starts sending WhatsApp messages immediately
+
+====================================
+3. NOTIFICATION TRIGGERS (NO CHANGE)
+====================================
+
+The existing notification triggers remain unchanged, such as:
+- Request submission
+- Assignment to HOD / Manager
+- Approval / Rejection
+- Escalation to AGM / GM
+- Final decision
+
+System behavior:
+- If Email enabled → send Email
+- If WhatsApp enabled → send WhatsApp
+- If both enabled → send both
+- If both disabled → no notifications sent
+
+====================================
+4. BACKEND CONFIGURATION
+====================================
+
+------------------------------------
+4.1 SETTINGS STORAGE
+------------------------------------
+
+Create / update table or collection:
+
+Table: notification_settings
+- id
+- channel (EMAIL / WHATSAPP)
+- enabled (boolean)
+- config_json (encrypted)
+- created_by
+- updated_by
+- updated_at
+
+Sensitive fields (passwords, tokens) must be encrypted at rest.
+
+------------------------------------
+4.2 SERVICE LAYER
+------------------------------------
+
+Create:
+- EmailNotificationService
+- WhatsAppNotificationService
+
+Each service must:
+- Check channel enabled flag
+- Load credentials from settings
+- Send message
+- Fail gracefully if disabled or misconfigured
+
+====================================
+5. API ENDPOINTS
+====================================
+
+GET /api/settings/notifications
+- Returns current Email & WhatsApp config (mask secrets)
+
+POST /api/settings/notifications/email
+- Save email credentials & enable/disable
+
+POST /api/settings/notifications/whatsapp
+- Save WhatsApp credentials & enable/disable
+
+POST /api/settings/notifications/test/email
+- Sends test email
+
+POST /api/settings/notifications/test/whatsapp
+- Sends test WhatsApp message
+
+====================================
+6. SECURITY & ACCESS CONTROL
+====================================
+
+- Only Admin role can:
+  - View notification credentials
+  - Modify notification settings
+  - Enable / Disable channels
+- Mask sensitive values in UI (e.g., ****1234)
+- Log all changes in audit trail:
+  - Who changed what
+  - Old value → New value
+  - Timestamp
+
+====================================
+7. UI/UX RULES
+====================================
+
+- Keep UI extremely simple
+- Use toggle switches for enable/disable
+- Hide credential fields unless enabled
+- Show clear status indicators:
+  - ✅ Active
+  - ❌ Disabled
+  - ⚠️ Misconfigured (credentials missing)
+
+====================================
+8. FAILURE HANDLING
+====================================
+
+- If notification sending fails:
+  - Log error internally
+  - Do NOT block workflow
+- Show warning in Settings page if test fails
+
+====================================
+9. ACCEPTANCE CRITERIA
+====================================
+
+✔ Admin can enable/disable Email notifications  
+✔ Admin can enable/disable WhatsApp notifications  
+✔ Only credentials required (no complex setup)  
+✔ Test message works for both channels  
+✔ Workflow unaffected if notifications are disabled  
+✔ Secure storage of credentials  
+✔ Audit trail maintained  
+
+====================================
+10. FINAL OUTPUT EXPECTED
+====================================
+
+Generate:
+- Notification Settings UI
+- Backend APIs
+- Secure credential storage
+- Email & WhatsApp service handlers
+- Test notification feature
