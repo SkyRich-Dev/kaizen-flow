@@ -1,0 +1,325 @@
+You are an expert enterprise system architect.
+
+Implement a COMPLETE REPORT MODULE for the Kaizen Risk Assessment & Approval System,
+strictly aligned with the FINAL workflow, roles, and approval limits.
+Do NOT change any workflow or permissions.
+Reports must be role-based, filterable, exportable, and audit-safe.
+
+====================================
+1. REPORT ACCESS MATRIX (STRICT)
+====================================
+
+| Role | Report Access |
+|----|----|
+| Initiator | Own requests only |
+| Manager | Own department + cross-dept summary |
+| HOD | Own department + cross-dept |
+| AGM | All reports |
+| GM | All reports |
+| System Admin | All reports + system |
+
+====================================
+2. REPORT CATEGORIES
+====================================
+
+A. Initiator Reports  
+B. Department & Evaluation Reports  
+C. Cross-Department Reports  
+D. Management & Financial Reports  
+E. Risk & Compliance Reports  
+F. Performance & SLA Reports  
+G. System & Notification Reports  
+
+====================================
+3. INITIATOR REPORTS
+====================================
+
+------------------------------------
+3.1 My Kaizen Requests Report
+------------------------------------
+Who: Initiator  
+Purpose: Track own submissions
+
+Fields:
+- Kaizen ID
+- Department
+- Station / Process
+- Current Status
+- Pending With (Role)
+- Submission Date
+- Final Decision
+- Rejection Reason (if any)
+
+Filters:
+- Date range
+- Status
+
+Export: Excel / CSV
+
+====================================
+4. DEPARTMENT & EVALUATION REPORTS
+====================================
+
+------------------------------------
+4.1 Department Kaizen Summary Report
+------------------------------------
+Who: Manager, HOD  
+
+Fields:
+- Kaizen ID
+- Initiating Department
+- Current Stage
+- Status
+- Estimated Cost
+- Risk Level (Overall)
+- Days in Workflow
+
+Filters:
+- Department
+- Status
+- Cost range
+- Risk level
+
+------------------------------------
+4.2 Department Evaluation Detail Report
+------------------------------------
+Who: Manager, HOD, AGM  
+
+Purpose: Review evaluation quality
+
+Fields:
+- Kaizen ID
+- Evaluator Role (Manager / HOD)
+- Evaluator Department
+- Evaluation Question
+- Answer (Yes / No)
+- Risk Level
+- Remarks
+- Evaluation Date
+
+------------------------------------
+4.3 Evaluation Risk Heatmap
+------------------------------------
+Who: HOD, AGM, GM  
+
+Purpose: Identify recurring risks
+
+Metrics:
+- High-risk questions
+- Department-wise risk frequency
+- Risk trend over time
+
+====================================
+5. CROSS-DEPARTMENT REPORTS
+====================================
+
+------------------------------------
+5.1 Cross-Department Approval Status Report
+------------------------------------
+Who: Manager, HOD, AGM  
+
+Fields:
+- Kaizen ID
+- Initiator Department
+- Pending Manager Departments
+- Pending HOD Departments
+- Approval Completion %
+
+------------------------------------
+5.2 Cross-Department Rejection Analysis
+------------------------------------
+Who: HOD, AGM, GM  
+
+Fields:
+- Rejected By Role
+- Rejected Department
+- Rejection Reason
+- Count
+- Trend
+
+====================================
+6. MANAGEMENT & FINANCIAL REPORTS
+====================================
+
+------------------------------------
+6.1 Kaizen Pipeline / Funnel Report
+------------------------------------
+Who: AGM, GM  
+
+Metrics:
+- Total Kaizens
+- Pending at each stage
+- Approved
+- Rejected
+
+Visuals:
+- Funnel
+- Stage bar chart
+
+------------------------------------
+6.2 Cost Impact & Approval Limit Report
+------------------------------------
+Who: Accounts, AGM, GM  
+
+Fields:
+- Kaizen ID
+- Department
+- Estimated Cost
+- Approval Level Required (AGM / GM)
+- Approved Cost
+- Budget Status
+
+------------------------------------
+6.3 Budget Utilization Report
+------------------------------------
+Who: Accounts, AGM, GM  
+
+Metrics:
+- Approved Kaizen cost by department
+- Monthly / quarterly spend
+- Remaining budget
+
+------------------------------------
+6.4 Manpower & Process Impact Report
+------------------------------------
+Who: AGM, GM  
+
+Fields:
+- Kaizen ID
+- Department
+- Manpower Added (Yes / No)
+- Process Change (Yes / No)
+- Net impact summary
+
+====================================
+7. RISK & COMPLIANCE REPORTS
+====================================
+
+------------------------------------
+7.1 High-Risk Kaizen Report
+------------------------------------
+Who: HOD, AGM, GM  
+
+Criteria:
+- Any evaluation with High risk
+- Any rejected Kaizen due to risk
+
+------------------------------------
+7.2 Compliance & Documentation Report
+------------------------------------
+Who: Admin, AGM  
+
+Fields:
+- Missing PFMEA
+- Missing CRR
+- Missing Checksheet
+- Document upload delay
+
+------------------------------------
+7.3 Audit Trail Report
+------------------------------------
+Who: Admin, AGM, GM  
+
+Fields:
+- Kaizen ID
+- Action
+- User
+- Role
+- Department
+- Timestamp
+- Remarks
+
+====================================
+8. PERFORMANCE & SLA REPORTS
+====================================
+
+------------------------------------
+8.1 SLA & Delay Report
+------------------------------------
+Who: HOD, AGM, GM  
+
+Fields:
+- Kaizen ID
+- Stage
+- SLA Target
+- Actual Time
+- Delay (days)
+- Responsible Role
+
+------------------------------------
+8.2 Approval Turnaround Time (TAT) Report
+------------------------------------
+Who: AGM, GM  
+
+Metrics:
+- Avg approval time by role
+- Fastest / slowest approvals
+
+====================================
+9. SYSTEM & NOTIFICATION REPORTS
+====================================
+
+------------------------------------
+9.1 Notification Delivery Report
+------------------------------------
+Who: System Admin  
+
+Fields:
+- Notification Type (Email / WhatsApp)
+- Trigger Event
+- Status (Sent / Failed)
+- Failure Reason
+- Timestamp
+
+------------------------------------
+9.2 User Activity Report
+------------------------------------
+Who: System Admin  
+
+Fields:
+- User
+- Role
+- Actions performed
+- Last login
+- Approval count
+
+====================================
+10. REPORT UI & FEATURES
+====================================
+
+Common features for ALL reports:
+- Date range filter
+- Department filter
+- Status filter
+- Cost range filter
+- Export (CSV / Excel)
+- Drill-down to Kaizen Detail Page
+
+Dashboards:
+- Initiator: My Reports
+- Manager/HOD: Department & Risk
+- AGM/GM: Management & Financial
+- Admin: System & Audit
+
+====================================
+11. DATA GOVERNANCE RULES
+====================================
+
+- Initiators cannot see other department data
+- Managers cannot see financial approval beyond limits
+- AGM/GM have read-only access to historical decisions
+- Admin has no approval rights
+
+====================================
+12. FINAL OUTPUT REQUIRED
+====================================
+
+Generate:
+- Report API endpoints
+- Aggregation queries
+- Role-based filters
+- Export logic
+- Dashboard UI using MUI DataGrid
+
+DO NOT modify workflow or permissions.
+This report module is FINAL.
