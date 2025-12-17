@@ -1,0 +1,390 @@
+You are an expert full-stack engineer and UI/UX developer.
+
+Build a **web-based Kaizen Risk Assessment & Approval System** with **end-to-end workflow automation** and **role-based dashboards**, based strictly on the requirements below. Do NOT change or remove any core features and functionalities. You may improve usability and layout but must preserve business logic and approval rules exactly as described.
+
+====================================
+1. GOAL & OVERVIEW
+====================================
+
+Build a secure, responsive web application to digitize the **Kaizen Risk Assessment Process** with an automated workflow:
+
+Initiation → CFT → HOD → AGM/GM → Final Decision
+
+Key capabilities:
+- End-to-end workflow automation
+- Role-based dashboards (Initiator, CFT, HOD, AGM/GM, Management)
+- Risk evaluation with acceptance/rejection & reasons
+- Cost-based approval thresholds (<50k / >50k / >100k)
+- Auto notifications
+- Full audit trails
+- Reporting & exports
+
+You can choose a standard MERN/TypeScript stack (e.g., React + Node/Express + a simple DB like SQLite/Postgres). Focus on **clean modular code** and **clear UI**.
+
+====================================
+2. USER ROLES
+====================================
+
+Implement role-based access:
+
+1. **Initiator**
+   - Any authorized employee from a department (e.g., Maintenance, Production, Quality, Manufacturing).
+   - Can create and track their Kaizen requests.
+
+2. **CFT Members** (Cross Functional Team)
+   - From departments: Maintenance, Production, Quality, Manufacturing.
+   - Perform departmental risk assessment.
+
+3. **Manufacturing HOD & ME**
+   - Review CFT-assessed requests.
+   - Approve/Reject with reasons.
+
+4. **AGM/GM**
+   - Approve/Reject based on cost thresholds and process/manpower additions.
+
+5. **Management / Admin**
+   - Global view of all requests.
+   - Configure master data if needed (can be minimal in this version).
+
+====================================
+3. CORE WORKFLOW (BUSINESS LOGIC)
+====================================
+
+Implement the following exact workflow:
+
+3.1 **Request Initiation (Initiator)**
+- Initiator logs in and fills a **Kaizen Request Form** with fields:
+  - Station Name
+  - Issue Description
+  - Program
+  - Customer Part Number
+  - Date of Origination
+  - Department (e.g., Maintenance / Production / Quality / Manufacturing)
+  - Cost estimate (₹)
+  - Flags: 
+    - Is additional process required? (Yes/No)
+    - Is additional manpower required? (Yes/No)
+  - Attachments (file upload):
+    - Check sheets
+    - PFMEA
+    - CRR sheets
+    - Other related docs
+
+- On **Submit**:
+  - Request status: `Pending CFT Review`
+  - Auto-assign to CFT members in Maintenance, Production, Quality, Manufacturing.
+  - Trigger **notification/email** (or stubbed notification) to relevant CFT members.
+  - Initiator can see the new request in their dashboard with status.
+
+3.2 **CFT Review (Departmental Risk Assessment)**
+- Each CFT member logs in and sees **only the requests assigned to their department**.
+- For each Kaizen request, they complete a **department-specific digital evaluation checklist** with fields:
+  - Risk acceptance: Yes/No (Accept/Reject)
+  - Comments (mandatory if Reject)
+  - Risk factors to capture:
+    - Safety
+    - Productivity
+    - Manpower
+    - Ergonomics
+    - Training
+    - Cost implications
+    - Quality concerns
+
+- Rules:
+  - Rejection must always have a mandatory reason/comment.
+  - Once CFT assessment is submitted:
+    - Their part of the evaluation is stored.
+    - Request status updates so that all departments’ assessments can be tracked.
+  - If any CFT member rejects:
+    - The Kaizen is ultimately **Rejected** (after all required logic is applied).
+    - System must store rejection reason(s) and show them in history.
+
+- After all CFT members complete their review and if NOT rejected:
+  - Request moves to **HOD Review** stage.
+
+3.3 **Manufacturing HOD & ME Review**
+- HOD dashboard shows requests that have completed CFT stage and are pending HOD review.
+- For each request, HOD can:
+  - View: 
+    - Initiator details
+    - CFT assessment summaries
+    - Risk factors
+    - Cost estimate
+    - Process/manpower flags
+    - Attached documents
+  - Take action:
+    - Accept / Reject
+    - If Reject → mandatory reason
+    - If Accept → moves forward based on cost and process/manpower conditions.
+
+- After HOD Acceptance:
+  - If **cost ≤ ₹50,000** AND **no process/manpower addition**:
+    - No AGM/GM approval required.
+    - Kaizen can be considered **Approved** at HOD level (status: Approved).
+  - If **cost > ₹50,000** OR **any process/manpower addition involved**:
+    - Escalate to AGM/GM based on cost thresholds below.
+
+3.4 **Cost-Based Escalation (AGM/GM)**
+- Cost thresholds:
+  - ≤ ₹50,000 : HOD-only (no AGM/GM needed, unless there is a rule that process/manpower still needs higher authority—respect requirement below).
+  - ₹50,000–₹100,000 : AGM approval required.
+  - > ₹100,000 : GM approval required.
+- Additionally:
+  - Any **process addition** or **manpower addition** also requires approval at AGM/GM level (follow cost-based routing above).
+
+- For AGM/GM:
+  - View of all escalated Kaizen requests requiring their decision.
+  - Fields:
+    - Cost breakdown / Estimated cost
+    - Mandatory **Cost Justification** input field.
+    - Approve / Reject action.
+    - If Reject → mandatory reason.
+
+- On final approval or rejection:
+  - Status changes to:
+    - Approved
+    - Rejected
+  - Notifications are sent to all relevant stakeholders (Initiator, CFT, HOD, AGM/GM as applicable).
+
+3.5 **Final Decision & Notifications**
+- System must:
+  - Record final decision (Approved/Rejected).
+  - Store all reasons for rejection at ANY stage.
+  - Trigger notifications on:
+    - CFT assignment
+    - HOD assignment
+    - AGM/GM assignment
+    - Approval or rejection
+  - These notifications can be implemented as:
+    - Email stubs (function calls) or
+    - In-app notification messages + activity logs.
+
+====================================
+4. DASHBOARDS & UI SCREENS
+====================================
+
+Design clean, modern, responsive UIs with role-based views. At minimum, create:
+
+4.1 **Login Screen**
+- Simple auth (email/password or username/password).
+- Role-based routing after login.
+
+4.2 **Initiator Dashboard**
+- Views:
+  - "My Kaizen Requests" table:
+    - Columns: ID, Station Name, Department, Status, Cost, Created Date, Current Stage (CFT/HOD/AGM/GM), Final Decision.
+  - Filters:
+    - Status (Pending, Under Review, Approved, Rejected)
+    - Date range
+    - Department
+    - Cost range
+  - Actions:
+    - Create New Kaizen (button)
+    - View Request Details (opens details page/modals with full history).
+- Visual indicators (badges/chips) for:
+  - Status colors (Pending, In Progress, Approved, Rejected).
+  - Cost impact (e.g., low/medium/high cost bands).
+
+4.3 **New Kaizen Request Form (Initiator)**
+- Form fields (as specified above).
+- Multi-file attachment support.
+- Client-side validation:
+  - Mandatory fields: Station Name, Issue Description, Program, Customer Part Number, Department, Date of Origination, etc.
+  - If cost is entered → must be numeric and ≥ 0.
+- After submission:
+  - Confirmation message.
+  - Auto-routing to CFT.
+
+4.4 **CFT Dashboard**
+- Shows Kaizen requests assigned to a CFT member’s department.
+- Table columns:
+  - Kaizen ID, Station Name, Department, Status, Assigned Date, SLA (if set), Cost.
+- Actions:
+  - Open request → Department Risk Assessment Form.
+- Department Risk Assessment Form:
+  - Fields:
+    - Risk acceptance: Accept / Reject (Yes/No).
+    - Safety risk evaluation.
+    - Productivity impact.
+    - Manpower implications.
+    - Ergonomics considerations.
+    - Training needs.
+    - Cost implications.
+    - Quality concerns.
+    - Comments (mandatory if Reject).
+  - Save as Draft and Submit buttons.
+  - On submit: record user, timestamp, and lock their department’s assessment.
+
+4.5 **HOD Dashboard**
+- Shows:
+  - Requests pending HOD Review.
+  - Summary cards:
+    - Pending approvals
+    - Recently approved
+    - Recently rejected
+  - Filters as above.
+- HOD Request Detail View:
+  - Sections:
+    - Basic info
+    - Initiator info
+    - CFT consolidated risk evaluation
+    - Risk factor summaries
+    - Cost estimate
+    - Process/manpower flags
+    - Attachments
+  - Actions:
+    - Approve / Reject
+    - Comments (mandatory if Reject)
+    - On Approve, trigger cost-based routing logic.
+
+4.6 **AGM/GM Dashboard**
+- Separate view or shared with additional role-level filters.
+- Shows:
+  - Requests needing AGM approval (₹50k–₹100k, or flagged for process/manpower if applicable).
+  - Requests needing GM approval (>₹100k).
+- Columns: ID, Station, Cost, HOD Decision, Current Status, Date, Process/Manpower flags.
+- Detail View:
+  - Display full approval chain to date.
+  - Mandatory **Cost Justification** text field.
+  - Approve / Reject buttons.
+  - Reject → mandatory reason.
+
+4.7 **Management / Global Dashboard**
+- High-level overview:
+  - Total Kaizen requests
+  - Approved / Rejected / In Progress counts
+  - Cost impact summary (sum of approved costs)
+  - Department-wise breakdown charts.
+- Filters:
+  - Date range
+  - Department
+  - Status
+  - Cost band
+- Ability to drill down into:
+  - Individual Kaizen details
+  - Approval history
+  - Comments & risk assessments.
+
+====================================
+5. AUDIT TRAIL & DOCUMENT MANAGEMENT
+====================================
+
+Implement comprehensive tracking:
+
+5.1 **Audit Trail**
+- Log all significant actions with:
+  - Kaizen ID
+  - User ID & Role
+  - Action Type (Created, Updated, Approved, Rejected, Comment Added, Attachment Uploaded, etc.)
+  - Stage (Initiator / CFT / HOD / AGM / GM)
+  - Timestamp
+  - Old value → New value where applicable.
+
+- Version control:
+  - If a Kaizen request form is edited (before final decision), store each revision as a version.
+  - Keep track of version number and change summary.
+
+5.2 **Comments & Rejection Reasons**
+- For every rejection at any stage (CFT / HOD / AGM / GM):
+  - Capture **mandatory comment**.
+  - Store and display in history/timeline.
+- Display all comments in chronological order on the Request Detail page.
+
+5.3 **Document Management**
+- For each Kaizen request:
+  - Allow upload of supporting documents: PFMEA, Check Sheets, Feasibility Studies, CRR, etc.
+  - Show list of attachments with:
+    - File name
+    - Uploaded by
+    - Upload date
+  - Provide ability to download (or simulate download) from the UI.
+
+====================================
+6. REPORTING & EXPORT
+====================================
+
+Implement a **Reporting module** accessible to Management/Admin with:
+
+- Export options:
+  - CSV/XLS exports for:
+    - Kaizen summary (per request)
+    - Departmental evaluations (CFT data)
+    - Cost approvals (HOD/AGM/GM approvals)
+    - Workflow status overview
+- Filters for exports:
+  - Status
+  - Date range
+  - Department
+  - Cost bands
+- Custom report generation:
+  - Combine filters to generate tailored reports.
+- Historical tracking:
+  - Ability to view past requests and their full lifecycle for audits and management review.
+
+====================================
+7. MULTI-TIER APPROVAL WORKFLOW ENFORCEMENT
+====================================
+
+Enforce the following rules in code:
+
+- Status tracked at each stage:
+  - Example statuses:
+    - Draft
+    - Pending CFT Review
+    - Under CFT Review
+    - CFT Rejected
+    - Pending HOD Review
+    - HOD Approved
+    - HOD Rejected
+    - Pending AGM Approval
+    - Pending GM Approval
+    - Approved
+    - Rejected (Final)
+- If **any rejection** occurs at any stage:
+  - Kaizen should move to a **Rejected** state (or CFT Rejected/HOD Rejected/etc. and final Rejected).
+  - System-enforced mandatory comments.
+- Automated routing based on:
+  - Cost:
+    - ≤50k → usually no AGM/GM
+    - 50k–100k → AGM
+    - >100k → GM
+  - Process/manpower flags:
+    - If Yes → escalate to AGM/GM as per cost thresholds.
+- Final approval updates workflow status and closes the request.
+
+====================================
+8. UI/UX GUIDELINES
+====================================
+
+- Use a clean, modern layout:
+  - Left-hand navigation for main modules (Dashboard, Requests, Reports, Admin).
+  - Top bar with user profile & role.
+- Use clear visual indicators:
+  - Status chips/badges with color codes.
+  - Progress indicators (e.g., a simple stepper showing Initiator → CFT → HOD → AGM/GM → Final).
+- Ensure:
+  - Responsive design for desktop and tablet.
+  - Good form validation messages.
+  - Clear separation between view-only and action buttons.
+
+====================================
+9. IMPLEMENTATION NOTES
+====================================
+
+- You may mock or stub:
+  - Email sending (implement functions but not actual SMTP).
+- Focus on:
+  - Correct data modeling.
+  - Clear separation of concerns (API routes, services, UI components).
+  - Maintainability & readability.
+
+IMPORTANT:
+- Do NOT change any of the **core logic**:
+  - Role flow: Initiator → CFT → HOD → AGM/GM
+  - Cost thresholds (≤50k, 50k–100k, >100k)
+  - Process/manpower addition requiring higher approval
+  - Mandatory comments on all rejections
+  - Dashboards per role
+  - Audit trail and reporting
+
+Now, generate the full implementation (backend + frontend skeleton) and key UI components/screens as described. Add sample seed data where useful to demonstrate dashboards and workflows.
