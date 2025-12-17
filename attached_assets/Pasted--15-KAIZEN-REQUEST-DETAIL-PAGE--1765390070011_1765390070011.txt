@@ -1,0 +1,154 @@
+====================================
+15. KAIZEN REQUEST DETAIL PAGE
+====================================
+
+Create a unified Request Detail Page (RDP) that displays all information, actions, history, risk assessments, approvals, and documents related to a single Kaizen request. This page must serve as the central reference point for all user roles (Initiator, CFT, HOD, AGM, GM, Admin). 
+
+Purpose:
+- To view the entire lifecycle of a Kaizen request.
+- To take context-specific actions (Approve, Reject, Review).
+- To see risk assessments, cost details, attachments, audit logs, comments, and workflow progress.
+
+====================================
+15.1 PAGE LAYOUT (3-COLUMN OR TABBED STRUCTURE)
+====================================
+
+Use a clear, modern layout:
+
+OPTION A — Three-Column Structure:
+- Left Panel: **Summary Card** + Workflow Stepper  
+- Middle Panel: **Details, Assessments, Approvals, Comments** (main content)  
+- Right Panel: **Attachments + Audit Trail**
+
+OPTION B — Tabs:
+- Overview
+- CFT Assessment
+- HOD Review
+- AGM/GM Approval
+- Attachments
+- Comments
+- Audit Trail
+
+Choose whichever UI structure fits your main layout.
+
+====================================
+15.2 CORE COMPONENTS OF THE DETAIL PAGE
+====================================
+
+The page must include the following components:
+
+--------------------------------------
+1. TOP HEADER SECTION (fixed)
+--------------------------------------
+Fields to display:
+- Kaizen Request ID (e.g., KZN-2025-045)
+- Status badge (Pending CFT / Under Review / HOD Pending / AGM Pending / GM Pending / Approved / Rejected)
+- Department
+- Created Date
+- Last Updated Date
+- Quick Actions (role based):
+  - HOD: Approve / Reject
+  - CFT: Submit Assessment
+  - AGM/GM: Approve / Reject + Cost justification field
+  - Admin: Edit Request
+  - Initiator: View Only (after submission)
+
+--------------------------------------
+2. REQUEST SUMMARY CARD (Side or Top)
+--------------------------------------
+Show key fields:
+- Station Name  
+- Issue Description  
+- Program  
+- Customer Part Number  
+- Cost Estimate  
+- Flags:
+  - Additional Process Required? (Yes/No)
+  - Additional Manpower Required? (Yes/No)
+- Initiator Name  
+- Initiator Department  
+- Date of Origination
+
+--------------------------------------
+3. WORKFLOW STEPPER / PROGRESS TIMELINE
+--------------------------------------
+Display stage-by-stage progress with timestamps:
+- Initiated
+- CFT Review 
+  - Maintenance
+  - Production
+  - Quality
+  - Manufacturing
+- HOD Review
+- AGM Approval (if applicable)
+- GM Approval (if applicable)
+- Final Status
+
+Each step must show:
+- Status icon (Complete / Pending / Rejected)
+- User name
+- Timestamp
+- Hover tooltip: status change details
+
+====================================
+15.3 TABS / SECTIONS (DETAILED)
+====================================
+
+--------------------------------------
+A. Overview Section
+--------------------------------------
+Contains:
+- Full request information (all fields)
+- Cost details and thresholds applied
+- System-determined routing logic summary:
+  Example:
+  “This request requires AGM approval because cost is ₹72,000.”
+  OR
+  “This request requires GM approval because cost is >₹100,000.”
+  OR
+  “Since manpower addition is required, escalate to AGM/GM.”
+
+--------------------------------------
+B. CFT ASSESSMENT SECTION
+--------------------------------------
+Show assessment card for each CFT department:
+
+For each department (Maintenance / Production / Quality / Manufacturing):
+- Reviewer Name
+- Assessment Status: Pending / Accepted / Rejected
+- Risk Assessment Fields:
+  - Safety
+  - Productivity
+  - Ergonomics
+  - Manpower
+  - Training
+  - Quality Concerns
+  - Cost Impact
+- Final Action: Accept / Reject
+- Rejection Reason (mandatory)
+- Timestamp
+
+Display a summary card:
+- If any CFT rejects:
+  - Highlight: “CFT Rejected – Request will be marked as Rejected after CFT stage.”
+
+--------------------------------------
+C. HOD REVIEW SECTION
+--------------------------------------
+If CFT stage is completed AND no CFT rejection:
+
+Show:
+- HOD Name
+- Decision: Pending / Approved / Rejected
+- Feasibility Review notes
+- Approval/Reject button (role restricted)
+- Rejection reason (mandatory)
+- Timestamp
+
+--------------------------------------
+D. AGM / GM APPROVAL SECTION
+--------------------------------------
+Displayed only when cost >50k or manpower/process flags require escalation.
+
+Show:
+- Req
