@@ -1,0 +1,355 @@
+You are an expert enterprise system architect and full-stack engineer.
+
+Build a COMPLETE, PRODUCTION-READY Kaizen Risk Assessment & Approval System
+using the FINAL workflow, roles, permissions, and rules defined below.
+
+This prompt OVERRIDES all previous workflow definitions.
+Do NOT modify roles, approval flow, evaluation logic, or escalation rules.
+
+====================================
+1. USER ROLES & COUNT (LOCKED)
+====================================
+
+Departments:
+- Maintenance
+- Production
+- Assembly
+- Admin
+- Accounts
+
+Users:
+
+Per Department:
+- Initiator → MULTIPLE
+- Manager → MULTIPLE
+- HOD (Department Head) → EXACTLY ONE
+
+Global (Single User Each):
+- AGM → 1
+- GM → 1
+- System Admin → 1 (configuration only)
+
+====================================
+2. FINAL REQUEST APPROVAL FLOW (LOCKED)
+====================================
+
+The approval flow MUST be exactly:
+
+Initiator  
+→ Own Department Manager  
+→ Own Department HOD  
+→ Cross-Department Managers (ALL other departments)  
+→ Cross-Department HODs (ALL other departments)  
+→ AGM (if required based on approval limit)  
+→ GM (if required based on approval limit)  
+→ Final Decision
+
+Rules:
+- Sequential and blocking
+- Any rejection at any stage ends the workflow
+- Full audit trail is mandatory
+
+====================================
+3. STAGE-WISE RESPONSIBILITIES & EVALUATION
+====================================
+
+------------------------------------
+3.1 INITIATOR
+------------------------------------
+- Raise Kaizen request
+- Upload documents
+- View request status
+- No approval or evaluation rights
+
+On submit:
+- Status → Pending Own Manager Approval
+
+------------------------------------
+3.2 OWN DEPARTMENT MANAGER
+------------------------------------
+Purpose: Initial departmental technical & operational review
+
+Actions:
+- MUST answer department-specific evaluation questions
+- Approve or Reject
+
+Rules:
+- Evaluation questions mandatory
+- Reject → Final Rejected
+
+On approval:
+- Status → Pending Own HOD Approval
+
+------------------------------------
+3.3 OWN DEPARTMENT HOD
+------------------------------------
+Purpose: Department feasibility & governance validation
+
+Actions:
+- Review Manager evaluation
+- MUST answer department evaluation questions
+- Approve or Reject
+
+Rules:
+- Reject → Final Rejected
+
+On approval:
+- Status → Pending Cross-Department Manager Approval
+
+------------------------------------
+3.4 CROSS-DEPARTMENT MANAGERS
+------------------------------------
+Who participates:
+- Managers from ALL OTHER departments
+- Initiator’s own department manager EXCLUDED
+
+Purpose: Cross-functional operational impact review
+
+Actions per Manager:
+- MUST answer department-specific evaluation questions
+- Approve or Reject
+
+Rules:
+- ALL managers must approve
+- ANY rejection → Final Rejected
+
+On approval:
+- Status → Pending Cross-Department HOD Approval
+
+------------------------------------
+3.5 CROSS-DEPARTMENT HODs
+------------------------------------
+Who participates:
+- HODs from ALL OTHER departments
+- Initiator’s own HOD EXCLUDED
+
+Purpose: Strategic, compliance & cross-department validation
+
+Actions per HOD:
+- Review:
+  - Initiator request
+  - Manager & HOD evaluations
+- MUST answer department evaluation questions
+- Approve or Reject
+
+Rules:
+- ALL HODs must approve
+- ANY rejection → Final Rejected
+
+On approval:
+- Status → Pending AGM Approval (ONLY if required)
+
+------------------------------------
+3.6 AGM APPROVAL (LIMIT-BASED)
+------------------------------------
+Purpose: Business & cost oversight
+
+Trigger condition:
+- Approval limit exceeded (configurable in Settings)
+
+Actions:
+- Approve or Reject
+
+Rules:
+- Reject → Final Rejected
+- Approve → Escalate to GM ONLY if GM limit exceeded
+
+------------------------------------
+3.7 GM APPROVAL (LIMIT-BASED – FINAL)
+------------------------------------
+Purpose: Final authority
+
+Trigger condition:
+- Approval limit exceeded (configurable)
+
+Actions:
+- Approve → Final Approved
+- Reject → Final Rejected
+
+GM decision is FINAL.
+
+====================================
+4. DEPARTMENT EVALUATION QUESTIONS
+====================================
+
+Evaluation is MANDATORY at:
+- Own Manager
+- Own HOD
+- Cross-Department Manager
+- Cross-Department HOD
+
+Each evaluation captures:
+- Answer (Yes / No)
+- Risk Level (Low / Medium / High)
+- Remarks (mandatory if No or High risk)
+
+Department Question Mapping:
+
+Manufacturing / Assembly:
+- Machine design feasibility
+- Fixture / tooling requirement
+- PFMEA updated
+- Process flow change
+- Safety impact
+- Validation requirement
+- Cycle time impact
+
+Production:
+- Operator safety
+- Training required
+- Productivity impact
+- Ergonomics impact
+- Manpower requirement
+
+Maintenance:
+- Breakdown accessibility
+- Mechanical / electrical add-on
+- PLC logic change
+- Spare cost impact
+- Ongoing program impact
+- R&R suitability
+
+Quality (if applicable under Manufacturing):
+- Quality validation
+- Control plan update
+- Process capability data
+- Master / boundary sample
+- PCN / customer approval
+
+Admin:
+- Policy compliance
+- Documentation impact
+
+Accounts:
+- Budget availability
+- Cost justification
+- Financial feasibility
+
+====================================
+5. APPROVAL LIMIT CONFIGURATION
+====================================
+
+Configurable in Settings (Admin only):
+
+- Manager & HOD → No monetary limit
+- AGM approval limit (e.g., > ₹X)
+- GM approval limit (e.g., > ₹Y)
+
+System behavior:
+- If amount ≤ AGM limit → Skip AGM & GM
+- If amount > AGM limit → AGM required
+- If amount > GM limit → GM required
+
+====================================
+6. STATUS MODEL (FINAL)
+====================================
+
+Use ONLY:
+
+- Draft
+- Pending Own Manager Approval
+- Pending Own HOD Approval
+- Pending Cross-Department Manager Approval
+- Pending Cross-Department HOD Approval
+- Pending AGM Approval
+- Pending GM Approval
+- Approved (Final)
+- Rejected (Final)
+
+Rejection reason and rejected stage stored in audit logs.
+
+====================================
+7. DASHBOARD VISIBILITY
+====================================
+
+Initiator:
+- Own requests only
+
+Manager:
+- Pending approvals
+- All requests (read-only)
+
+HOD:
+- Own department requests
+- Cross-department requests
+
+AGM:
+- All requests
+- Act only if limit exceeded
+
+GM:
+- All requests
+- Act only if limit exceeded
+
+System Admin:
+- Settings, users, reports only
+- NO approvals
+
+====================================
+8. REPORT MODULE
+====================================
+
+Reports include:
+- My Kaizen Requests
+- Department Kaizen Summary
+- Evaluation & Risk Report
+- Rejection Analysis
+- Cross-Department Approval Status
+- Cost & Budget Impact
+- Manpower & Process Impact
+- Audit Trail
+- SLA & Delay
+- Notification Delivery
+
+Role-based access strictly enforced.
+
+====================================
+9. NOTIFICATIONS
+====================================
+
+Channels:
+- Email
+- WhatsApp
+
+Admin can:
+- Enter credentials
+- Enable / Disable channels
+- Test notifications
+
+Triggers:
+- Submission
+- Assignment
+- Approval
+- Rejection
+- Final decision
+
+====================================
+10. TECH STACK (LOCKED)
+====================================
+
+Frontend:
+- React JS
+- Material UI (MUI)
+
+Backend:
+- Django
+- Django REST Framework
+- PostgreSQL
+- JWT Authentication
+
+====================================
+11. FINAL OUTPUT REQUIRED
+====================================
+
+Generate:
+- React + MUI frontend
+- Django REST backend
+- Database schema
+- APIs
+- Role permissions
+- Reports
+- Notification services
+- Seed data
+
+DO NOT deviate from this flow.
+This is production-ready and final.
