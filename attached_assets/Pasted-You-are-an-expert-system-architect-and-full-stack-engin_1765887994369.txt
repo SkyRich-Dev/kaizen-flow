@@ -1,0 +1,271 @@
+You are an expert system architect and full-stack engineer.
+
+Update the Kaizen Request approval workflow to introduce **Department Managers** and modify the approval sequence as defined below.  
+Preserve all existing modules: Request Form, Dashboards, Audit Trail, Notifications, Reports, and Settings.
+
+DO NOT remove any approval layer.  
+DO NOT weaken rejection or audit rules.
+
+====================================
+1. ORGANIZATIONAL STRUCTURE (UPDATED)
+====================================
+
+Departments (master data):
+- Maintenance
+- Production
+- Assembly
+- Admin
+- Accounts
+
+Each department must have:
+- Multiple Initiators
+- Exactly ONE HOD
+- One or more Managers
+
+Roles:
+- Initiator (department-specific)
+- Manager (department-specific)
+- HOD (department-specific)
+- AGM (global)
+- GM (global)
+- Admin (system)
+
+====================================
+2. NEW APPROVAL FLOW (MANDATORY)
+====================================
+
+The approval flow must be **exactly**:
+
+Initiator (Department)
+→ Own Department HOD
+→ Cross-Department Managers (ALL)
+→ Cross-Department HODs (ALL)
+→ AGM
+→ GM
+→ Final Decision
+
+====================================
+3. DETAILED FLOW LOGIC
+====================================
+
+------------------------------------
+3.1 REQUEST INITIATION
+------------------------------------
+- Any Initiator can raise a Kaizen request.
+- Department auto-derived from user profile.
+- On Submit:
+  - Status → `Pending Own HOD Approval`
+  - Route to HOD of Initiator’s department.
+
+------------------------------------
+3.2 OWN DEPARTMENT HOD APPROVAL
+------------------------------------
+- Own department HOD reviews first.
+- Actions:
+  - Approve → forward
+  - Reject → workflow ends (Final Rejected)
+- Rejection requires mandatory reason.
+
+On Approval:
+- Status → `Pending Cross-Department Manager Approval`
+- Route request to **Managers of ALL other departments**
+  (exclude own department Manager by default).
+
+------------------------------------
+3.3 CROSS-DEPARTMENT MANAGER APPROVAL
+------------------------------------
+- All cross-department Managers must review.
+- Each Manager can:
+  - Approve
+  - Reject (mandatory reason)
+
+Rules:
+- If **ANY Manager rejects**:
+  - Status → `Rejected by Manager`
+  - Workflow stops.
+- If **ALL Managers approve**:
+  - Status → `Pending Cross-Department HOD Approval`
+
+------------------------------------
+3.4 CROSS-DEPARTMENT HOD APPROVAL
+------------------------------------
+- All department HODs (excluding initiator’s HOD) must approve.
+- Each HOD reviews:
+  - Manager feedback
+  - Risk & cost impact
+- Actions:
+  - Approve
+  - Reject (mandatory reason)
+
+Rules:
+- If **ANY HOD rejects**:
+  - Status → `Rejected by HOD`
+  - Workflow stops.
+- If **ALL HODs approve**:
+  - Status → `Pending AGM Approval`
+
+------------------------------------
+3.5 AGM APPROVAL
+------------------------------------
+- AGM reviews full approval chain.
+- Actions:
+  - Approve → route to GM
+  - Reject → Final Rejected
+
+------------------------------------
+3.6 GM APPROVAL (FINAL)
+------------------------------------
+- GM decision is final.
+- Actions:
+  - Approve → Final Approved
+  - Reject → Final Rejected
+
+====================================
+4. STATUS MODEL (UPDATED)
+====================================
+
+Use these exact statuses:
+
+- Draft
+- Pending Own HOD Approval
+- Own HOD Rejected
+- Pending Cross-Department Manager Approval
+- Manager Rejected
+- Pending Cross-Department HOD Approval
+- Cross-HOD Rejected
+- Pending AGM Approval
+- AGM Rejected
+- Pending GM Approval
+- Approved (Final)
+- Rejected (Final)
+
+====================================
+5. DASHBOARD VISIBILITY RULES
+====================================
+
+------------------------------------
+5.1 INITIATOR DASHBOARD
+------------------------------------
+- See only own requests.
+- View:
+  - Current stage
+  - Pending approver group
+  - Rejection reason (if any)
+
+------------------------------------
+5.2 MANAGER DASHBOARD
+------------------------------------
+Managers see:
+- Requests pending their action only.
+- Read-only access to all other requests.
+
+------------------------------------
+5.3 HOD DASHBOARD
+------------------------------------
+HOD sees:
+- Own department requests (Own HOD stage)
+- Cross-department requests (Cross-HOD stage)
+
+------------------------------------
+5.4 AGM & GM DASHBOARD
+------------------------------------
+- See ALL requests.
+- Action enabled only when status matches their stage.
+
+====================================
+6. REQUEST DETAIL PAGE – ACTION CONTROL
+====================================
+
+Show Approve / Reject buttons ONLY when:
+- Own HOD & status = Pending Own HOD Approval
+- Manager & status = Pending Cross-Department Manager Approval
+- Cross-HOD & status = Pending Cross-Department HOD Approval
+- AGM & status = Pending AGM Approval
+- GM & status = Pending GM Approval
+
+Otherwise:
+- Read-only mode
+- Banner: “This request is not pending your action.”
+
+====================================
+7. DATA MODEL CHANGES
+====================================
+
+Add / extend tables:
+
+Table: users
+- id
+- name
+- role (Initiator / Manager / HOD / AGM / GM / Admin)
+- department_id
+
+Table: kaizen_manager_approvals
+- id
+- kaizen_id
+- manager_user_id
+- department_id
+- decision
+- remarks
+- timestamp
+
+Table: kaizen_hod_approvals
+- id
+- kaizen_id
+- hod_user_id
+- department_id
+- decision
+- remarks
+- stage_type (OWN / CROSS)
+- timestamp
+
+====================================
+8. API ENDPOINTS (UPDATED)
+====================================
+
+POST /api/kaizen/{id}/own-hod-decision
+POST /api/kaizen/{id}/manager-decision
+POST /api/kaizen/{id}/cross-hod-decision
+POST /api/kaizen/{id}/agm-decision
+POST /api/kaizen/{id}/gm-decision
+
+GET /api/kaizen/{id}
+- Must return:
+  - own_hod_status
+  - manager_approvals[]
+  - cross_hod_approvals[]
+  - pending_roles[]
+
+====================================
+9. AUDIT & NOTIFICATIONS
+====================================
+
+- Log every action:
+  - user
+  - role
+  - department
+  - decision
+  - timestamp
+- Notify:
+  - Initiator on every status change
+  - Pending approvers on assignment
+
+====================================
+10. ACCEPTANCE CRITERIA
+====================================
+
+✔ Each department has Initiator, Manager, and HOD  
+✔ Initiator → Own HOD → All Managers → All HODs → AGM → GM flow enforced  
+✔ Any Manager or HOD rejection stops workflow  
+✔ AGM & GM see all requests  
+✔ Full audit trail maintained  
+
+====================================
+11. FINAL OUTPUT EXPECTATION
+====================================
+
+Generate:
+- Updated workflow engine logic
+- Updated dashboards for Manager & HOD
+- Updated Request Detail Page logic
+- Updated database schema & APIs
+- Sample seed data for all departments, Managers, and HODs
