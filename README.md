@@ -1,0 +1,1 @@
+# KaizenFlow\n\nRisk Assessment & Approval System with Django REST Framework backend and React frontend.
