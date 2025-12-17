@@ -1,0 +1,168 @@
+You are an expert full-stack engineer.
+
+Update the Kaizen Risk Assessment system so that **AGM and GM roles can view ALL Kaizen requests across the organization**, while still enforcing existing approval permissions and workflow rules.
+
+DO NOT change:
+- Approval logic
+- Cost thresholds
+- Escalation rules
+- Mandatory rejection reasons
+- Audit trail behavior
+
+Only extend visibility and dashboards.
+
+====================================
+1. BUSINESS REQUIREMENT
+====================================
+
+AGM and GM must have **complete visibility** of:
+- All Kaizen requests (Draft, In Progress, Approved, Rejected)
+- All departments
+- All cost bands
+- Full approval history
+
+However:
+- AGM/GM must be able to **take action (Approve/Reject)** only on requests **currently routed to them**.
+- All other requests must be **view-only**.
+
+====================================
+2. AGM & GM DASHBOARD CHANGES
+====================================
+
+Replace the current “Only Pending Approvals” view with a **dual-section dashboard**.
+
+------------------------------------
+2.1 DASHBOARD SECTIONS
+------------------------------------
+
+Section A: **Requests Requiring My Action**
+- Filtered list:
+  - AGM sees:
+    - Cost ₹50,000 – ₹100,000
+    - Process/manpower flagged requests routed to AGM
+  - GM sees:
+    - Cost > ₹100,000
+- Actions enabled:
+  - View Details
+  - Approve
+  - Reject
+
+Section B: **All Kaizen Requests (Read-Only / Conditional Actions)**
+- Shows **every Kaizen request in the system**
+- Columns:
+  - Kaizen ID
+  - Station Name
+  - Initiator Department
+  - Cost
+  - Current Stage
+  - Status
+  - Final Decision
+  - Created Date
+- Actions:
+  - View Details (always enabled)
+  - Approve / Reject (ONLY if request is currently routed to AGM/GM)
+
+------------------------------------
+2.2 FILTERS (MANDATORY)
+------------------------------------
+
+Add advanced filters:
+- Status:
+  - Draft
+  - Pending CFT
+  - Under CFT Review
+  - Pending HOD
+  - Pending AGM
+  - Pending GM
+  - Approved
+  - Rejected
+- Department
+- Date range
+- Cost band:
+  - ≤ ₹50k
+  - ₹50k–₹100k
+  - > ₹100k
+- Escalation reason:
+  - Cost based
+  - Process addition
+  - Manpower addition
+
+------------------------------------
+2.3 VISUAL INDICATORS
+------------------------------------
+
+- Status badges with color coding
+- Icon/flag for:
+  - Process addition
+  - Manpower addition
+- Cost band indicator
+- Tooltip:
+  - “Action not allowed – request not routed to you”
+
+====================================
+3. REQUEST DETAIL PAGE – AGM/GM VIEW
+====================================
+
+Update the Request Detail Page behavior for AGM & GM:
+
+- AGM/GM must be able to open **any Kaizen request** from dashboard
+- Show full lifecycle:
+  - Initiator details
+  - CFT assessments
+  - HOD decision
+  - Previous AGM/GM actions (if any)
+  - Attachments
+  - Audit trail
+
+------------------------------------
+3.1 ACTION BUTTON LOGIC
+------------------------------------
+
+On the Request Detail Page:
+- If request.status == "Pending AGM" AND user.role == AGM:
+  - Show Approve / Reject buttons
+- If request.status == "Pending GM" AND user.role == GM:
+  - Show Approve / Reject buttons
+- Else:
+  - Hide action buttons
+  - Show banner:
+    “Read-only view. This request is not pending your approval.”
+
+====================================
+4. BACKEND API CHANGES
+====================================
+
+------------------------------------
+4.1 NEW / UPDATED ENDPOINTS
+------------------------------------
+
+GET /api/kaizen/all?role=AGM|GM
+- Returns all Kaizen requests
+- Includes:
+  - current_stage
+  - approver_role_required
+  - is_actionable (boolean)
+- is_actionable = true ONLY if:
+  - role matches approver_role_required
+  - status is Pending AGM or Pending GM
+
+GET /api/kaizen/pending?actionRole=AGM|GM
+- Returns only requests currently requiring approval
+
+------------------------------------
+4.2 RESPONSE SAMPLE
+------------------------------------
+
+```json
+{
+  "kaizen_id": "KZN-2025-041",
+  "station_name": "Final Assembly",
+  "department": "Manufacturing",
+  "cost": 125000,
+  "status": "Pending GM",
+  "current_stage": "GM Approval",
+  "approver_role_required": "GM",
+  "is_actionable": true,
+  "process_addition": false,
+  "manpower_addition": true
+}
