@@ -1,0 +1,211 @@
+You are an expert system architect and full-stack engineer.
+
+Update the Kaizen Request approval workflow so that at every **department approval stage**
+(Cross-Department Manager and Cross-Department HOD),
+the approver is REQUIRED to complete a **department-specific evaluation checklist**
+based on the uploaded "PY_Feasibility & Risk Assessment Review Check Sheet".
+
+Do NOT change the approval sequence or escalation logic.
+Only add mandatory evaluation questions before approval/rejection.
+
+Reference the uploaded PDF pages for exact questions and structure. :contentReference[oaicite:1]{index=1}
+
+====================================
+1. WHERE EVALUATION QUESTIONS APPLY
+====================================
+
+Evaluation questions must be shown and enforced at:
+
+1. Cross-Department Manager Approval stage
+2. Cross-Department HOD Approval stage
+
+Rules:
+- Each approver answers ONLY the questions related to their department
+- Approval button must remain DISABLED until all required questions are answered
+- Reject requires mandatory remarks (already enforced)
+
+====================================
+2. QUESTION STRUCTURE (COMMON)
+====================================
+
+Each question must capture:
+- question_key (stable ID, e.g., mfg.q1, prod.q3)
+- question_text (exact wording from PDF)
+- answer (Yes / No)
+- risk_level (Low / Medium / High)
+- remarks (mandatory if answer = No OR risk = High)
+- evaluated_by (user id)
+- evaluated_role (Manager / HOD)
+- evaluated_date (timestamp)
+
+====================================
+3. DEPARTMENT-WISE QUESTION SETS
+====================================
+
+------------------------------------
+3.1 MANUFACTURING ENGINEERING (PDF Page 1)
+------------------------------------
+Ask when approver.department == Manufacturing
+
+Questions:
+1. Does the change fit in the machine design?
+2. Is new fixture / jigs / tools / chute (input & output) required?
+3. Is cost for new fixtures / jigs / tools / chute finalized?
+4. Is PFMEA created or modified?
+5. Is there any change in process flow?
+6. Is it affecting the safety of the product?
+7. Is it requiring any document update (JES / PV / Check sheet / Setup)?
+8. Is process validation required?
+9. Is it affecting the cycle time?
+10. Is the improvement feasible to implement Make & Break type?
+
+------------------------------------
+3.2 PRODUCTION (PDF Page 1)
+------------------------------------
+Ask when approver.department == Production
+
+Questions:
+1. Is it affecting safety of the producer?
+2. Is training for the producer required?
+3. Is it affecting productivity?
+4. Is it affecting ergonomics / fatigue of the producer?
+5. Is additional manpower required?
+
+------------------------------------
+3.3 QUALITY (PDF Page 2)
+------------------------------------
+Ask when approver.department == Quality
+
+Questions:
+1. Is quality validation required?
+2. Is First-Off / Control Plan created or modified?
+3. Is process capability data required?
+4. Is master sample or boundary sample created or modified?
+5. Is PCN required?
+6. Is customer approval required?
+
+------------------------------------
+3.4 MAINTENANCE (PDF Page 2)
+------------------------------------
+Ask when approver.department == Maintenance
+
+Questions:
+1. Is the PY / improvement accessible in case of breakdown?
+2. Does the improvement require add-on mechanical / electrical accessories?
+3. Is PLC program logic to be modified?
+4. Is spare cost included / manageable in budget?
+5. Will this modification affect the ongoing program?
+6. Is any V/O add-on required?
+7. Is the R&R of the product selected OK?
+
+====================================
+4. UI BEHAVIOR (MANDATORY)
+====================================
+
+On the Request Detail Page:
+
+- When status = Pending Cross-Department Manager Approval
+  AND user.role = Manager:
+  - Show "Department Evaluation" section above Approve/Reject buttons
+  - Load questions based on user's department
+  - Disable Approve button until:
+    - All questions answered
+    - Risk level selected for each
+    - Mandatory remarks filled where applicable
+
+- When status = Pending Cross-Department HOD Approval
+  AND user.role = HOD:
+  - Show the same department evaluation section
+  - Pre-display Manager’s answers as read-only
+  - HOD must re-evaluate and submit own answers
+
+====================================
+5. APPROVAL RULES (STRICT)
+====================================
+
+- If approver clicks Reject:
+  - Remarks mandatory
+  - Evaluation answers still saved
+- If approver clicks Approve:
+  - All evaluation questions must be completed
+- If ANY Manager or HOD rejects:
+  - Workflow stops
+  - Status updated accordingly
+  - Initiator notified with rejection reasons
+
+====================================
+6. DATA MODEL CHANGES
+====================================
+
+Add new table/collection:
+
+Table: kaizen_department_evaluations
+- id
+- kaizen_id
+- department
+- evaluator_user_id
+- evaluator_role (Manager / HOD)
+- evaluation_answers (JSON array of question_key, answer, risk_level, remarks)
+- decision (Approve / Reject)
+- created_at
+
+====================================
+7. API CHANGES
+====================================
+
+POST /api/kaizen/{id}/department-evaluation
+Body:
+{
+  "department": "Manufacturing",
+  "role": "Manager",
+  "answers": [
+    {
+      "question_key": "mfg.q1",
+      "answer": "Yes",
+      "risk_level": "Low",
+      "remarks": ""
+    }
+  ],
+  "decision": "Approve",
+  "remarks": "No impact observed"
+}
+
+GET /api/kaizen/{id}
+- Must return:
+  - manager_evaluations[]
+  - hod_evaluations[]
+
+====================================
+8. AUDIT & REPORTING
+====================================
+
+- Log every evaluation submission with:
+  - User
+  - Role
+  - Department
+  - Timestamp
+- Reports must support:
+  - Question-wise risk trends
+  - Department-wise rejection reasons
+  - High-risk Kaizen identification
+
+====================================
+9. ACCEPTANCE CRITERIA
+====================================
+
+✔ Department evaluation questions appear at Manager & HOD stages  
+✔ Questions exactly match the uploaded PDF  
+✔ Approval blocked until evaluation is completed  
+✔ Risk level & remarks captured per question  
+✔ Full audit trail maintained  
+
+====================================
+10. FINAL OUTPUT REQUIRED
+====================================
+
+Generate:
+- Updated Request Detail Page UI
+- Evaluation question components
+- Backend APIs & schema
+- Sample evaluation submission data
+- Updated workflow logic enforcing evaluation completion
