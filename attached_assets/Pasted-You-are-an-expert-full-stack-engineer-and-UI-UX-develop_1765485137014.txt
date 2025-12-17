@@ -1,0 +1,145 @@
+You are an expert full-stack engineer and UI/UX developer. Update the existing Kaizen Request Form so it fully digitizes and enforces the fields, checklists and sign-offs shown in the uploaded "PY_Feasibility & Risk assessment_TGL.pdf". Reference the original scanned sheet when mapping questions and validations. The uploaded PDF is available as a source and must be used to build the form logic and labels. :contentReference[oaicite:1]{index=1}
+
+Requirements (do NOT change core workflow or approval logic):
+- Preserve all workflow steps: Initiator → CFT (Maintenance, Production, Quality, Manufacturing) → HOD → AGM/GM → Final decision.
+- Use dynamic approval thresholds from Settings (≤₹50k, ₹50k–₹100k, >₹100k), but ensure the form captures cost and process/manpower flags that trigger escalation.
+- All rejections require mandatory comment capture.
+- All submissions, assessments and approvals must generate audit log entries.
+
+Deliverables to produce in this task:
+1. Updated UI form specification (fields, layout, conditional behavior, validation).
+2. Updated backend API contract (endpoints + payload schemas) required to support the form.
+3. Data model changes (database tables/collections and key fields).
+4. Sample JSON payload representing a full submitted form mapped from the PDF.
+5. Acceptance tests for client/server validation and business rules.
+
+Form specification (map to PDF pages and fields):
+1. Header
+   - kaizen_id (auto)
+   - initiator_user_id, initiator_name, initiator_department
+   - customer_program (text) — map from PDF "Customer/Program" (page 1)
+   - part_number (text) — map from PDF "Part Number & Name" (page 1)
+   - date_of_origination (date) — map from PDF (page 1)
+   - feasibility_for_implementation (enum: Feasible / Not Feasible) + reason_if_not_feasible (text)
+
+2. Main issue block (from PDF page 1)
+   - station_name (text)
+   - assembly_line / OP# & Station (text)
+   - issue_title (short text)
+   - issue_description (rich text)
+   - poka_yoke_or_kaizen_description (long text)
+   - reason_for_implementation (long text)
+   - expected_benefits (multiselect): Productivity / Quality / Cost / Delivery / Safety / Morale
+   - effect_of_changes (multiselect): Tool / Fixture / Process / Layout / Machine / PLC / Pneumatic / Electrical
+
+3. Cost & escalation flags
+   - cost_estimate (number, INR)
+   - cost_currency (default INR)
+   - additional_process_required (boolean)
+   - additional_manpower_required (boolean)
+   - cost_justification (text) — required if cost_estimate > 0 OR when escalated
+   - spare_cost_included (boolean)
+
+4. Attachments
+   - Multi-file upload with categories: PFMEA, Check Sheet, CRR, Photos, Other.
+   - Enforce required document check if Settings mark PFMEA/CRR/Checksheet required.
+   - Show link: "Refer scanned form – page 1–2" for QC. :contentReference[oaicite:2]{index=2}
+
+5. Departmental checklists (create one reusable component and instantiate for each department). Each checklist row must capture:
+   - question_key (stable key e.g., mfg.q1, prod.q2)
+   - question_label (use text exactly from PDF where possible)
+   - answer (Yes / No / N/A)
+   - risk_involved (Low / Medium / High)
+   - remarks (text; mandatory when answer == No or risk == High or when decision == Reject)
+   - signer_name (text)
+   - signer_signature_type (typed name or electronic signature)
+   - signed_date (date)
+
+   Map questions exactly as on the PDF:
+   - Manufacturing Engineering section (page 1) — include S.No 1..10 rows (e.g., "Does the change fit the machine design?", "Is new fixture/tools required?", "Is PFMEA created or modified?", etc.)
+   - Production section (page 1) — include safety/training/productivity/ergonomics/manpower items.
+   - Quality section (page 2) — include validation, first-off control plan, process capability data, master sample, PCN/customer approval items.
+   - Maintenance section (page 2) — include accessibility on breakdown, mechanical/electrical add-on, PLC logic modifications, spare cost, effect on ongoing program, V/O add-ons, R&R OK.
+
+6. CFT consolidated section
+   - cft_overall_decision (Accept / Reject)
+   - cft_consolidated_remarks (text)
+   - auto-evaluate “any department rejected → cft_overall_decision = Reject”
+   - display aggregated risk scores (safety, productivity, manpower, ergonomics, training, quality) with calculated averages and allow manual override by HOD only if Settings allow.
+
+7. HOD review section
+   - hod_decision (Approve / Reject)
+   - hod_remarks (mandatory when Reject)
+   - hod_name, hod_signature, hod_date
+   - On Approve: compute approver_role_required based on Settings thresholds and flags; display expected escalation route message (e.g., "Escalate to AGM because cost ₹72,000").
+
+8. AGM/GM approval section (visible only when escalated)
+   - approver_role (AGM / GM)
+   - approver_decision (Approve / Reject)
+   - cost_justification (mandatory for approve)
+   - approver_comments (mandatory for reject)
+   - approver_name, approver_signature, approver_date
+
+9. Audit & versioning
+   - Every change (save draft / submit / each department assessment / HOD / AGM/GM decision) must create an audit log entry recording previous and new values where applicable.
+   - Keep version snapshot of the form at each submit/approval step.
+
+Validation & conditional logic (strict):
+- Required on final Submit: station_name, issue_description, program, part_number, date_of_origination.
+- If Settings.require_documents is true → block submit until mandated docs uploaded.
+- Departmental checklist: when a department user submits their assessment, ensure every row in their checklist is answered; if any row has answer == No or risk == High, highlight for HOD attention.
+- If any department_answer == Reject → set overall status to "CFT Rejected"; capture mandatory rejection remarks and notify initiator.
+- Escalation rules:
+  - If cost_estimate <= settings.threshold_hod → HOD approval is sufficient (unless process/manpower flags require escalation if Settings mandate it).
+  - If settings.override_process_manpower_escalation == true and additional_process_required || additional_manpower_required → escalate irrespective of cost.
+- The approver_role_required must be a server-computed field returned to the frontend in GET /kaizen/{id}.
+
+API contract (add/adjust endpoints):
+- GET /api/kaizen/{id} → returns full form, per-department checklists, attachments, CFT consolidated data, computed approver_role_required, audit trail summary.
+- POST /api/kaizen → create draft.
+- POST /api/kaizen/{id}/submit → validate & submit; returns updated status and assigned CFT members.
+- POST /api/kaizen/{id}/attachment → upload file (returns file id & category).
+- POST /api/kaizen/{id}/department-assessment → body: {department, assessor_user_id, answers: [{question_key, answer, risk, remarks}], signer_name, signed_date}
+- POST /api/kaizen/{id}/hod-decision → body: {hod_user_id, decision, remarks}
+- POST /api/kaizen/{id}/approver-decision → body: {approver_user_id, role(AGM|GM), decision, cost_justification, remarks}
+- GET /api/settings/thresholds → used by UI to show escalation messages.
+
+Data model changes (summary):
+- kaizen_requests (extend with poka_yoke_description, reason_for_implementation, expected_benefits[])
+- kaizen_attachments (category enum)
+- kaizen_department_assessments (department, assessment_json, decision, signer_name, signed_at)
+- kaizen_approvals (role, user_id, decision, cost_justification, comments, timestamp)
+- audit_logs (entity_type, entity_id, action, actor_id, actor_role, old_value, new_value, timestamp)
+- kaizen_versions (snapshot_json, version_number, created_by, created_at)
+
+Sample JSON (full submit example)
+- Provide one realistic sample payload that includes header, issue details, cost, both process/manpower flags, all four departmental checklist objects (manufacturing, production, quality, maintenance), attachments metadata, CFT consolidated decision = accept, HOD = approve and routed to AGM because cost falls into 50k–100k band.
+
+Acceptance tests (must be automated-ready descriptions)
+- Test A: Save Draft and edit → check version increment only on submit.
+- Test B: Submit without required attachments when Settings require them → block & return clear message referencing the required doc(s).
+- Test C: Department user submits incomplete checklist → block with field-level errors.
+- Test D: One department rejects → overall status becomes "CFT Rejected", initiator receives notification, rejection reason stored.
+- Test E: HOD approves a request with cost 72,000 and additional_manpower_required = true → request escalates to AGM (not GM) and appears on AGM dashboard.
+- Test F: Approver approves without entering cost_justification → block; ensure cost_justification mandatory enforcement.
+
+UI/UX requirements
+- Use tabbed layout: Overview | Department Checklists | CFT Consolidation | HOD Review | Approver Review | Attachments | Audit Trail.
+- Show inline link “View original scanned checklist (PDF page 1–2)” which opens the uploaded PDF reference. :contentReference[oaicite:3]{index=3}
+- Show clear escalation message above HOD/AGM panels computed from server settings.
+- Provide Save Draft, Submit, and Cancel actions. Use modal confirmations for Submit and Approve/Reject actions with review of mandatory fields.
+
+Developer notes
+- Do not hardcode thresholds. Use Settings value via GET /api/settings/thresholds.
+- Store checklist answers as JSON for future report mapping and changes.
+- Keep question keys stable and documented so reports and filters can query them (e.g., "mfg.q1_pfmea_modified").
+- Ensure audit log contains before/after snapshots for any approve/reject action.
+
+Finally, generate:
+- UI form field definitions (label, key, type, required, validation rules)
+- Updated API schema (OpenAPI/Swagger compatible) for the endpoints above
+- Database migration SQL (or schema definitions for chosen ORM) for the new/updated tables
+- One sample POST /api/kaizen payload (JSON)
+- A short developer test plan mapping acceptance tests to API calls and UI steps
+
+Do not change any core workflow rules; only extend the request form UI, data model, APIs and validation to exactly mirror the uploaded "PY_Feasibility & Risk assessment_TGL.pdf". :contentReference[oaicite:4]{index=4}
