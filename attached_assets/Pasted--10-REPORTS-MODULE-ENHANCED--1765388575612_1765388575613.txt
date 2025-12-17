@@ -1,0 +1,192 @@
+====================================
+10. REPORTS MODULE (ENHANCED)
+====================================
+
+Extend the Reporting Module with deeper analytics, multiple report types, configurable parameters, and downloadable archives. Preserve all existing reporting requirements and add the following enhancements:
+
+10.1 REPORT TYPES (NEW)
+Implement a Reports Center with the following report categories:
+
+1. Workflow Performance Reports
+   - TAT (Turnaround Time) per stage:
+     - Initiation → CFT
+     - CFT → HOD
+     - HOD → AGM
+     - AGM → GM
+   - Bottleneck identification (e.g., which department has the highest pending load).
+   - Average approval time by role.
+
+2. Kaizen Effectiveness Reports
+   - Cost savings achieved vs. proposed.
+   - Productivity impact scoring (aggregated from risk assessments).
+   - Department-wise Kaizen contribution count/impact.
+
+3. Compliance Reports
+   - Rejection reasons grouped by:
+     - CFT department
+     - HOD
+     - AGM/GM
+   - Missing documentation alerts (requests with missing PFMEA, CRR, checklist).
+   - Audit trail completeness verification.
+
+4. Resource & Cost Allocation Reports
+   - Total cost of approved Kaizens by month, quarter, year.
+   - High-cost Kaizen list (>100k) with justification summary.
+   - Manpower/Process addition trend report.
+
+5. Custom Report Builder (NEW)
+   - User can create a custom report by selecting:
+     - Fields (status, cost, department, dates, risk factors, approval time, etc.)
+     - Filters
+     - Sort options
+     - Export format (CSV, XLS)
+
+10.2 REPORT UI/UX
+Create a dedicated **Reports Dashboard** with:
+
+- Left-hand panel:  
+  Workflow Performance | Kaizen Effectiveness | Compliance | Cost Allocation | Custom Builder
+
+- Right panel:  
+  Selected report view  
+  - Filters (date range, department, status, cost band, role, etc.)
+  - Data table with pagination  
+  - Chart visualizations:
+    - Bar chart
+    - Line graph
+    - Donut/pie charts
+    - KPI cards  
+
+- Export buttons:
+  - Export current table to CSV/XLS
+  - Export full report package as ZIP (CSV + charts as PNG)
+
+10.3 ADVANCED FEATURES
+- Scheduled Reports  
+  Add ability to configure scheduled reports (weekly/monthly) that auto-generate and store in a “Report Archive”.
+
+- Report Archive  
+  A storage area listing past generated reports with:
+  - Report name
+  - Type
+  - Generated date
+  - Download link
+
+====================================
+11. SETTINGS MODULE (NEW)
+====================================
+
+Create a full administrative **Settings Module** accessible only to Admin/Management roles. It must include the following categories:
+
+11.1 USER & ROLE MANAGEMENT
+- Create/Edit/Delete users
+- Assign roles:
+  - Initiator
+  - CFT (with department tag)
+  - HOD
+  - AGM
+  - GM
+  - Admin
+- Activate/Deactivate users
+- Reset password/reset credentials
+
+11.2 DEPARTMENT MANAGEMENT
+- Add/Edit/Delete departments
+- Set department attributes (name, head of department, default approver)
+
+11.3 APPROVAL CONFIGURATION (DYNAMIC SETTINGS)
+Enable dynamic management of:
+- Cost thresholds:
+  - ≤50k (HOD)
+  - 50k–100k (AGM)
+  - >100k (GM)
+- Change the values anytime; workflow should reference these dynamic values (not hard-coded).
+- Enable/Disable mandatory AGM approval for manpower/process additions.
+- Configure required documents for initiation (PFMEA, CRR, Checksheet).
+
+11.4 WORKFLOW SETTINGS
+- Turn ON/OFF CFT involvement for specific departments.
+- Set escalations (e.g., auto-escalate to HOD if CFT does not act within X hours).
+- SLA (Service Level Agreement) settings for each stage:
+  - CFT review SLA
+  - HOD review SLA
+  - AGM/GM review SLA
+- SLA breach notifications settings.
+
+11.5 NOTIFICATIONS SETTINGS
+- Email template editor (text-based)
+- Notification triggers toggle:
+  - On submission
+  - On escalation
+  - On approval
+  - On rejection
+- Add CC/BCC rules for departments.
+
+11.6 MASTER DATA MANAGEMENT
+- Programs master list
+- Customer Part Number master list
+- Station master list
+- Risk factor scoring configuration
+- Document category definitions
+
+11.7 SECURITY SETTINGS
+- Password strength rules
+- Multi-factor authentication toggle (optional)
+- Session timeout settings
+- Attempt lockout threshold
+
+11.8 AUDIT LOG VIEWER (ADMIN ONLY)
+- Searchable log of all system actions
+- Filters:
+  - User
+  - Module
+  - Action type
+  - Date
+- Export audit logs
+
+====================================
+12. SETTINGS UI/UX REQUIREMENTS
+====================================
+
+- Left-side navigation:
+  Users | Departments | Workflow | Approvals | Notifications | Master Data | Security | Audit Logs
+- All settings screens must:
+  - Display form fields clearly
+  - Validate input
+  - Confirm updates with modal popup
+  - Provide change history (version log for settings)
+
+====================================
+13. DATA MODEL EXTENSIONS
+====================================
+
+Add new tables/collections for:
+
+- settings_cost_thresholds
+- settings_workflow
+- settings_notifications
+- settings_master_data
+- scheduled_reports
+- report_archive
+- audit_logs (extend existing one)
+- sla_configurations
+
+====================================
+14. IMPLEMENTATION GUIDELINES
+====================================
+
+- All new modules must integrate seamlessly with existing roles and workflow logic.
+- Do NOT modify the core approval flow or rejection rules.
+- Settings changes should take effect immediately in the workflow.
+- Reports must respect role-based visibility:
+  - Initiators → only reports related to their submissions
+  - CFT → only departmental analytics
+  - HOD → department-wide insights
+  - AGM/GM → cost/performance reports
+  - Admin → full access
+
+Finish by generating:
+- Updated backend endpoints
+- Updated frontend UI components
+- Sample data for settings and reports
+- Routing updates for new modules
