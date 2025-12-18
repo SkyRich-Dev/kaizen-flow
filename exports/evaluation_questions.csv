@@ -1,0 +1,28 @@
+ID,Question Key,Question Text,Is Required,Order,Department
+1,maint.q1,Is the equipment properly maintained and serviced?,Yes,1,MAINTENANCE
+2,maint.q2,Are all safety guards and covers in place?,Yes,2,MAINTENANCE
+3,maint.q3,Is preventive maintenance schedule being followed?,Yes,3,MAINTENANCE
+4,maint.q4,Are spare parts available for critical equipment?,Yes,4,MAINTENANCE
+5,maint.q5,Is the maintenance log updated regularly?,Yes,5,MAINTENANCE
+6,maint.q6,Are breakdown patterns analyzed for root causes?,Yes,6,MAINTENANCE
+7,maint.q7,Is there adequate training for maintenance staff?,Yes,7,MAINTENANCE
+8,prod.q1,Will this change affect production capacity?,Yes,1,PRODUCTION
+9,prod.q2,Is the change compatible with current production line?,Yes,2,PRODUCTION
+10,prod.q3,Will there be any downtime during implementation?,Yes,3,PRODUCTION
+11,prod.q4,Are production targets achievable after implementation?,Yes,4,PRODUCTION
+12,prod.q5,Is the change documented for production procedures?,Yes,5,PRODUCTION
+13,assy.q1,Does this change affect assembly process flow?,Yes,1,ASSEMBLY
+14,assy.q2,Is worker safety impacted by this change?,Yes,2,ASSEMBLY
+15,assy.q3,Are assembly instructions updated?,Yes,3,ASSEMBLY
+16,assy.q4,Will this require additional training for assembly workers?,Yes,4,ASSEMBLY
+17,assy.q5,Is the change compatible with existing assembly tools?,Yes,5,ASSEMBLY
+18,assy.q6,Will cycle time be affected?,Yes,6,ASSEMBLY
+19,admin.q1,Is the change compliant with company policies?,Yes,1,ADMIN
+20,admin.q2,Are all necessary approvals in place?,Yes,2,ADMIN
+21,admin.q3,Is documentation properly archived?,Yes,3,ADMIN
+22,admin.q4,Are stakeholders informed of the change?,Yes,4,ADMIN
+23,acct.q1,Is the budget approved for this change?,Yes,1,ACCOUNTS
+24,acct.q2,Are vendor payments scheduled?,Yes,2,ACCOUNTS
+25,acct.q3,Is cost tracking set up for this project?,Yes,3,ACCOUNTS
+26,acct.q4,Are financial risks documented?,Yes,4,ACCOUNTS
+27,acct.q5,Is ROI calculation complete?,Yes,5,ACCOUNTS

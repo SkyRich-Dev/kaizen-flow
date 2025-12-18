@@ -1,0 +1,21 @@
+ID,Request ID,Title,Station Name,Assembly Line,Issue Description,Poka Yoke Description,Program,Part Number,Cost Estimate (INR),Status,Current Stage,Department,Created At
+20,KZN-2024-0001,Draft: Laser Cutting Machine Upgrade,Cutting Station 1,Line A,Current laser cutter has limited precision for new designs.,Auto-focus and material detection.,Multi-Program,MP-DRAFT-001,45000,DRAFT,DRAFT,MAINTENANCE,2025-12-17
+21,KZN-2024-0002,Draft: Workbench Lighting Improvement,Assembly Station 5,Line B,Insufficient lighting causes eye strain.,Motion-activated LED lights.,All Programs,ALL-DRAFT-002,12000,DRAFT,DRAFT,PRODUCTION,2025-12-17
+22,KZN-2024-0003,Draft: Air Compressor Replacement,Utility Room,N/A,Old compressor is inefficient and noisy.,Pressure monitoring system.,Multi-Program,MP-DRAFT-003,85000,DRAFT,DRAFT,ASSEMBLY,2025-12-17
+23,KZN-2024-0004,Draft: Document Scanner Installation,Admin Office,N/A,Manual document handling is slow.,Auto-feed with jam detection.,Admin,ADM-DRAFT-004,8000,DRAFT,DRAFT,ADMIN,2025-12-17
+24,KZN-2024-0005,Draft: Invoice Processing Software,Accounts Office,N/A,Manual invoice entry is error-prone.,OCR with validation.,Finance,FIN-DRAFT-005,35000,DRAFT,DRAFT,ACCOUNTS,2025-12-17
+25,KZN-2024-0006,PM01: CNC Tool Changer Automation,CNC Station 1,Line A,Manual tool change takes 15 minutes.,Sensor-based tool detection.,Toyota Innova,TI-PM01,48000,PENDING_OWN_MANAGER,OWN_MANAGER,MAINTENANCE,2025-12-17
+26,KZN-2024-0007,PM02: Hydraulic Press Safety Upgrade,Press Station 2,Line B,Need two-hand operation for safety.,Dual palm button system.,Honda City,HC-PM02,22000,PENDING_OWN_MANAGER,OWN_MANAGER,MAINTENANCE,2025-12-17
+27,KZN-2024-0008,PM03: Conveyor Speed Controller,Main Conveyor,Line A,Fixed speed causes bottlenecks.,Variable speed with sensors.,Maruti Swift,MS-PM03,38000,PENDING_OWN_MANAGER,OWN_MANAGER,PRODUCTION,2025-12-17
+28,KZN-2024-0009,PM04: Quality Camera System,QC Station 1,Line C,Visual inspection is inconsistent.,AI-based defect detection.,Tata Nexon,TN-PM04,65000,PENDING_OWN_MANAGER,OWN_MANAGER,PRODUCTION,2025-12-17
+29,KZN-2024-0010,PM05: Torque Wrench Upgrade,Fastening Station 1,Line A,Manual torque verification is slow.,Digital torque with logging.,BMW X1,BX1-PM05,55000,PENDING_OWN_MANAGER,OWN_MANAGER,ASSEMBLY,2025-12-17
+30,KZN-2024-0011,PM06: Parts Bin Organization,Assembly Station 8,Line B,Parts mixing causes errors.,Color-coded with RFID.,Hyundai Creta,HC-PM06,18000,PENDING_OWN_MANAGER,OWN_MANAGER,ASSEMBLY,2025-12-17
+31,KZN-2024-0012,PM07: Visitor Management System,Reception,N/A,Manual visitor log is inefficient.,Digital check-in with badges.,Admin,ADM-PM07,25000,PENDING_OWN_MANAGER,OWN_MANAGER,ADMIN,2025-12-17
+32,KZN-2024-0013,PM08: Meeting Room Booking System,Conference Rooms,N/A,Double bookings are common.,Real-time availability display.,Admin,ADM-PM08,15000,PENDING_OWN_MANAGER,OWN_MANAGER,ADMIN,2025-12-17
+33,KZN-2024-0014,PM09: Expense Tracking App,Finance Office,N/A,Paper receipts are lost.,Mobile app with OCR.,Finance,FIN-PM09,28000,PENDING_OWN_MANAGER,OWN_MANAGER,ACCOUNTS,2025-12-17
+34,KZN-2024-0015,PM10: Budget Dashboard,Finance Office,N/A,Budget tracking is manual.,Real-time budget alerts.,Finance,FIN-PM10,42000,PENDING_OWN_MANAGER,OWN_MANAGER,ACCOUNTS,2025-12-17
+35,KZN-2024-0016,POH01: Welding Fume Extractor,Welding Bay 1,Line A,Welding fumes exceed limits.,Auto-start with welder activation.,Multi-Program,MP-POH01,35000,PENDING_OWN_HOD,OWN_HOD,MAINTENANCE,2025-12-17
+36,KZN-2024-0017,POH02: Assembly Line Balancing,Line B,Line B,Uneven workload distribution.,Workload monitoring display.,Honda City,HC-POH02,28000,PENDING_OWN_HOD,OWN_HOD,PRODUCTION,2025-12-17
+37,KZN-2024-0018,POH03: Ergonomic Tool Holders,Assembly Stations,Line C,Tools not within easy reach.,Magnetic holders at optimal height.,All Programs,ALL-POH03,15000,PENDING_OWN_HOD,OWN_HOD,ASSEMBLY,2025-12-17
+38,KZN-2024-0019,POH04: Training Room AV Upgrade,Training Room,N/A,Old projector is dim.,Auto-focus and wireless connection.,Admin,ADM-POH04,45000,PENDING_OWN_HOD,OWN_HOD,ADMIN,2025-12-17
+39,KZN-2024-0020,POH05: Payroll System Update,HR Office,N/A,Current system lacks features.,Automatic tax calculations.,Finance,FIN-POH05,55000,PENDING_OWN_HOD,OWN_HOD,ACCOUNTS,2025-12-17

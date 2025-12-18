@@ -1,0 +1,19 @@
+ID,Email,First Name,Last Name,Role,Department,Is Active
+1,admin@example.com,System,Administrator,ADMIN,,Active
+2,john.smith@example.com,John,Smith,INITIATOR,MAINTENANCE,Active
+3,mike.manager@example.com,Mike,Manager,MANAGER,MAINTENANCE,Active
+4,helen.hod@example.com,Helen,Henderson,HOD,MAINTENANCE,Active
+5,paul.producer@example.com,Paul,Producer,INITIATOR,PRODUCTION,Active
+6,mary.manager@example.com,Mary,Martinez,MANAGER,PRODUCTION,Active
+7,peter.hod@example.com,Peter,Peterson,HOD,PRODUCTION,Active
+8,alex.assembler@example.com,Alex,Anderson,INITIATOR,ASSEMBLY,Active
+9,sara.manager@example.com,Sara,Singh,MANAGER,ASSEMBLY,Active
+10,alan.hod@example.com,Alan,Adams,HOD,ASSEMBLY,Active
+11,david.admin@example.com,David,Davis,INITIATOR,ADMIN,Active
+12,diana.manager@example.com,Diana,Diaz,MANAGER,ADMIN,Active
+13,derek.hod@example.com,Derek,Dean,HOD,ADMIN,Active
+14,anna.accountant@example.com,Anna,Andrews,INITIATOR,ACCOUNTS,Active
+15,bob.manager@example.com,Bob,Brown,MANAGER,ACCOUNTS,Active
+16,betty.hod@example.com,Betty,Barnes,HOD,ACCOUNTS,Active
+17,agm.sharma@example.com,Rajesh,Sharma,AGM,ADMIN,Active
+18,gm.gupta@example.com,Vikram,Gupta,GM,ADMIN,Active
