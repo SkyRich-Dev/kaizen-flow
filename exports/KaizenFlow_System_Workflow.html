@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>KaizenFlow - System Workflow Document</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; margin: 40px; line-height: 1.6; }
+h1 { color: #1a365d; border-bottom: 2px solid #1a365d; padding-bottom: 10px; }
+h2 { color: #2d3748; margin-top: 30px; }
+h3 { color: #4a5568; }
+table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+th { background-color: #f0f4f8; }
+.workflow-box { background-color: #e6fffa; padding: 15px; margin: 15px 0; border: 2px solid #38b2ac; border-radius: 8px; }
+.stage { background-color: #ebf8ff; padding: 20px; margin: 20px 0; border-left: 5px solid #3182ce; }
+.decision { background-color: #fef3c7; padding: 15px; margin: 10px 0; border-left: 5px solid #d69e2e; }
+.arrow { text-align: center; font-size: 24px; color: #3182ce; margin: 10px 0; }
+ul { margin: 10px 0; }
+li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>KaizenFlow - System Workflow Document</h1>
+<p><strong>Version:</strong> 1.0 | <strong>Date:</strong> December 2025</p>
+
+<hr>
+
+<h2>1. Workflow Overview</h2>
+
+<p>The KaizenFlow system implements a comprehensive 7-stage approval workflow for processing Kaizen improvement requests. The workflow ensures proper evaluation by all relevant departments and escalates to senior management based on cost thresholds.</p>
+
+<div class="workflow-box">
+<h3>Complete Workflow Flow</h3>
+<p style="text-align: center; font-size: 14px;">
+<strong>DRAFT</strong> → <strong>OWN MANAGER</strong> → <strong>OWN HOD</strong> → <strong>CROSS-MANAGERS</strong> → <strong>CROSS-HODs</strong> → <strong>AGM</strong> (if applicable) → <strong>GM</strong> (if applicable) → <strong>APPROVED/REJECTED</strong>
+</p>
+</div>
+
+<h2>2. Detailed Workflow Stages</h2>
+
+<div class="stage">
+<h3>Stage 1: DRAFT</h3>
+<p><strong>Status:</strong> DRAFT</p>
+<p><strong>Actor:</strong> Initiator (any department employee)</p>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Create new kaizen request</li>
+<li>Fill in all required fields (title, station, issue description, cost estimate, etc.)</li>
+<li>Attach supporting documents (PFMEA, check sheets, photos)</li>
+<li>Save as draft or submit for approval</li>
+</ul>
+<p><strong>Next Stage:</strong> PENDING_OWN_MANAGER (on submit)</p>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage">
+<h3>Stage 2: OWN DEPARTMENT MANAGER REVIEW</h3>
+<p><strong>Status:</strong> PENDING_OWN_MANAGER</p>
+<p><strong>Actor:</strong> Manager of the initiator's department</p>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Review request details and feasibility</li>
+<li>Verify cost estimates</li>
+<li>Add comments/feedback</li>
+<li>Approve or Reject with reason</li>
+</ul>
+<div class="decision">
+<strong>Decision Points:</strong>
+<ul>
+<li><strong>Approve:</strong> Moves to PENDING_OWN_HOD</li>
+<li><strong>Reject:</strong> Moves to REJECTED status with reason</li>
+</ul>
+</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage">
+<h3>Stage 3: OWN DEPARTMENT HOD APPROVAL</h3>
+<p><strong>Status:</strong> PENDING_OWN_HOD</p>
+<p><strong>Actor:</strong> Head of Department (HOD) of the initiator's department</p>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Final department-level review</li>
+<li>Verify manager's assessment</li>
+<li>Confirm budget availability</li>
+<li>Approve or Reject</li>
+</ul>
+<div class="decision">
+<strong>Decision Points:</strong>
+<ul>
+<li><strong>Approve:</strong> Moves to PENDING_CROSS_MANAGER</li>
+<li><strong>Reject:</strong> Moves to REJECTED status</li>
+</ul>
+</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage">
+<h3>Stage 4: CROSS-DEPARTMENT MANAGER EVALUATION</h3>
+<p><strong>Status:</strong> PENDING_CROSS_MANAGER</p>
+<p><strong>Actors:</strong> Managers from ALL OTHER departments (4 managers)</p>
+<p><strong>Purpose:</strong> Risk assessment from each department's perspective</p>
+<p><strong>Actions per Manager:</strong></p>
+<ul>
+<li>Answer department-specific evaluation questions</li>
+<li>Rate risk level (Low/Medium/High) for each question</li>
+<li>Provide mandatory remarks for "No" answers or high-risk items</li>
+<li>Accept or Reject the request</li>
+</ul>
+
+<h4>Evaluation Questions by Department:</h4>
+<table>
+<tr><th>Department</th><th>Questions</th><th>Focus Areas</th></tr>
+<tr><td>Maintenance</td><td>7</td><td>Equipment maintenance, safety guards, spare parts, training</td></tr>
+<tr><td>Production</td><td>5</td><td>Capacity impact, compatibility, downtime, targets</td></tr>
+<tr><td>Assembly</td><td>6</td><td>Process flow, worker safety, instructions, cycle time</td></tr>
+<tr><td>Admin</td><td>4</td><td>Policy compliance, approvals, documentation</td></tr>
+<tr><td>Accounts</td><td>5</td><td>Budget approval, vendor payments, cost tracking, ROI</td></tr>
+</table>
+
+<div class="decision">
+<strong>Completion Criteria:</strong>
+<ul>
+<li>All 4 cross-department managers must complete their evaluation</li>
+<li>Any rejection by a manager moves request to REJECTED</li>
+<li>All acceptances move to PENDING_CROSS_HOD</li>
+</ul>
+</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage">
+<h3>Stage 5: CROSS-DEPARTMENT HOD EVALUATION</h3>
+<p><strong>Status:</strong> PENDING_CROSS_HOD</p>
+<p><strong>Actors:</strong> HODs from ALL OTHER departments (4 HODs)</p>
+<p><strong>Purpose:</strong> Senior-level risk validation from each department</p>
+<p><strong>Actions per HOD:</strong></p>
+<ul>
+<li>Review manager's evaluation</li>
+<li>Answer department-specific evaluation questions</li>
+<li>Rate risk levels and provide remarks</li>
+<li>Accept or Reject</li>
+</ul>
+<div class="decision">
+<strong>Completion Criteria:</strong>
+<ul>
+<li>All 4 cross-department HODs must complete their evaluation</li>
+<li>Any rejection moves request to REJECTED</li>
+<li>All acceptances trigger cost-based routing</li>
+</ul>
+</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage">
+<h3>Stage 6: AGM APPROVAL (Conditional)</h3>
+<p><strong>Status:</strong> PENDING_AGM</p>
+<p><strong>Actor:</strong> Assistant General Manager</p>
+<p><strong>Trigger Conditions (any one):</strong></p>
+<ul>
+<li>Cost estimate exceeds ₹50,000</li>
+<li>Request requires process addition</li>
+<li>Request requires manpower addition</li>
+</ul>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Review all previous evaluations</li>
+<li>Assess organizational impact</li>
+<li>Verify resource availability</li>
+<li>Approve or Reject</li>
+</ul>
+<div class="decision">
+<strong>Decision Points:</strong>
+<ul>
+<li><strong>Approve + Cost ≤ ₹100k:</strong> Moves to APPROVED</li>
+<li><strong>Approve + Cost > ₹100k:</strong> Moves to PENDING_GM</li>
+<li><strong>Reject:</strong> Moves to REJECTED</li>
+</ul>
+</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage">
+<h3>Stage 7: GM APPROVAL (Conditional)</h3>
+<p><strong>Status:</strong> PENDING_GM</p>
+<p><strong>Actor:</strong> General Manager</p>
+<p><strong>Trigger Condition:</strong></p>
+<ul>
+<li>Cost estimate exceeds ₹100,000</li>
+</ul>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Final executive review</li>
+<li>Strategic alignment assessment</li>
+<li>Budget approval</li>
+<li>Approve or Reject</li>
+</ul>
+<div class="decision">
+<strong>Decision Points:</strong>
+<ul>
+<li><strong>Approve:</strong> Moves to APPROVED</li>
+<li><strong>Reject:</strong> Moves to REJECTED</li>
+</ul>
+</div>
+</div>
+
+<div class="arrow">↓</div>
+
+<div class="stage" style="background-color: #c6f6d5;">
+<h3>Stage 8: FINAL STATUS</h3>
+<p><strong>Status:</strong> APPROVED or REJECTED</p>
+<p><strong>Actions:</strong></p>
+<ul>
+<li>Notification sent to initiator</li>
+<li>Audit log updated</li>
+<li>Request archived for reporting</li>
+</ul>
+</div>
+
+<h2>3. Cost-Based Routing Logic</h2>
+
+<table>
+<tr><th>Cost Range</th><th>Approval Path</th><th>Final Approver</th></tr>
+<tr><td>₹0 - ₹50,000</td><td>Own Manager → Own HOD → Cross-Managers → Cross-HODs</td><td>Cross-Department HODs</td></tr>
+<tr><td>₹50,001 - ₹100,000</td><td>...Cross-HODs → AGM</td><td>AGM</td></tr>
+<tr><td>Above ₹100,000</td><td>...AGM → GM</td><td>GM</td></tr>
+<tr><td>Any cost + Process/Manpower Addition</td><td>...Cross-HODs → AGM (→ GM if >₹100k)</td><td>AGM or GM</td></tr>
+</table>
+
+<h2>4. Rejection Handling</h2>
+
+<p>A request can be rejected at any stage. When rejected:</p>
+<ul>
+<li>The rejecting user must provide a reason</li>
+<li>Request status changes to REJECTED</li>
+<li>Initiator is notified with the rejection reason</li>
+<li>The rejecting department is recorded</li>
+<li>Full audit trail is maintained</li>
+</ul>
+
+<h2>5. Workflow Status Diagram</h2>
+
+<pre style="background-color: #f7fafc; padding: 20px; border-radius: 8px; overflow-x: auto;">
+                                    ┌─────────────┐
+                                    │   DRAFT     │
+                                    └──────┬──────┘
+                                           │ Submit
+                                           ▼
+                              ┌────────────────────────┐
+                              │  PENDING_OWN_MANAGER   │
+                              └───────────┬────────────┘
+                                    Approve │ Reject → REJECTED
+                                           ▼
+                              ┌────────────────────────┐
+                              │   PENDING_OWN_HOD      │
+                              └───────────┬────────────┘
+                                    Approve │ Reject → REJECTED
+                                           ▼
+                              ┌────────────────────────┐
+                              │ PENDING_CROSS_MANAGER  │
+                              │   (4 Managers needed)  │
+                              └───────────┬────────────┘
+                                All Accept │ Any Reject → REJECTED
+                                           ▼
+                              ┌────────────────────────┐
+                              │  PENDING_CROSS_HOD     │
+                              │   (4 HODs needed)      │
+                              └───────────┬────────────┘
+                                All Accept │ Any Reject → REJECTED
+                                           ▼
+                    ┌──────────────────────┴──────────────────────┐
+                    │                                             │
+          Cost ≤ ₹50k &                              Cost > ₹50k OR
+          No additions                               Process/Manpower
+                    │                                             │
+                    ▼                                             ▼
+             ┌──────────┐                            ┌────────────────┐
+             │ APPROVED │                            │  PENDING_AGM   │
+             └──────────┘                            └───────┬────────┘
+                                                       Approve │ Reject → REJECTED
+                                                              ▼
+                                          ┌───────────────────┴───────────────────┐
+                                          │                                       │
+                                    Cost ≤ ₹100k                           Cost > ₹100k
+                                          │                                       │
+                                          ▼                                       ▼
+                                   ┌──────────┐                        ┌────────────────┐
+                                   │ APPROVED │                        │  PENDING_GM    │
+                                   └──────────┘                        └───────┬────────┘
+                                                                         Approve │ Reject → REJECTED
+                                                                                ▼
+                                                                         ┌──────────┐
+                                                                         │ APPROVED │
+                                                                         └──────────┘
+</pre>
+
+<h2>6. Notification Triggers</h2>
+
+<table>
+<tr><th>Event</th><th>Recipients</th><th>Channels</th></tr>
+<tr><td>Request Submitted</td><td>Own Manager</td><td>Email, WhatsApp</td></tr>
+<tr><td>Manager Approved</td><td>Own HOD</td><td>Email, WhatsApp</td></tr>
+<tr><td>HOD Approved</td><td>All Cross-Managers</td><td>Email, WhatsApp</td></tr>
+<tr><td>All Managers Accepted</td><td>All Cross-HODs</td><td>Email, WhatsApp</td></tr>
+<tr><td>All HODs Accepted</td><td>AGM (if applicable)</td><td>Email, WhatsApp</td></tr>
+<tr><td>AGM Approved</td><td>GM (if applicable)</td><td>Email, WhatsApp</td></tr>
+<tr><td>Final Approval</td><td>Initiator</td><td>Email, WhatsApp</td></tr>
+<tr><td>Rejection</td><td>Initiator</td><td>Email, WhatsApp</td></tr>
+</table>
+
+</body>
+</html>

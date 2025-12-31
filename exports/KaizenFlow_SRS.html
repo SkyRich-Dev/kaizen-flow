@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>KaizenFlow - Software Requirements Specification</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; margin: 40px; line-height: 1.6; }
+h1 { color: #1a365d; border-bottom: 2px solid #1a365d; padding-bottom: 10px; }
+h2 { color: #2d3748; margin-top: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+h3 { color: #4a5568; }
+h4 { color: #718096; }
+table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+th { background-color: #f0f4f8; }
+.req-box { background-color: #f7fafc; padding: 15px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 4px; }
+.req-id { font-weight: bold; color: #3182ce; }
+ul { margin: 10px 0; }
+li { margin: 5px 0; }
+.priority-high { color: #c53030; font-weight: bold; }
+.priority-medium { color: #d69e2e; font-weight: bold; }
+.priority-low { color: #38a169; }
+</style>
+</head>
+<body>
+
+<h1>KaizenFlow - Software Requirements Specification (SRS)</h1>
+<p><strong>Version:</strong> 1.0</p>
+<p><strong>Date:</strong> December 2025</p>
+<p><strong>Document Status:</strong> Final</p>
+
+<hr>
+
+<h2>1. Introduction</h2>
+
+<h3>1.1 Purpose</h3>
+<p>This Software Requirements Specification (SRS) document describes the functional and non-functional requirements for the KaizenFlow Risk Assessment & Approval System. It is intended for stakeholders, developers, testers, and project managers involved in the development and deployment of the system.</p>
+
+<h3>1.2 Scope</h3>
+<p>KaizenFlow is an enterprise web application designed to digitize and automate the Kaizen Risk Assessment Process. The system manages improvement requests through a multi-stage approval workflow involving 5 departments, with cost-based escalation to senior management.</p>
+
+<h3>1.3 Definitions and Acronyms</h3>
+<table>
+<tr><th>Term</th><th>Definition</th></tr>
+<tr><td>Kaizen</td><td>Japanese term for "continuous improvement"</td></tr>
+<tr><td>HOD</td><td>Head of Department</td></tr>
+<tr><td>AGM</td><td>Assistant General Manager</td></tr>
+<tr><td>GM</td><td>General Manager</td></tr>
+<tr><td>TAT</td><td>Turn-Around Time</td></tr>
+<tr><td>SLA</td><td>Service Level Agreement</td></tr>
+<tr><td>RBAC</td><td>Role-Based Access Control</td></tr>
+<tr><td>JWT</td><td>JSON Web Token</td></tr>
+<tr><td>API</td><td>Application Programming Interface</td></tr>
+</table>
+
+<h3>1.4 References</h3>
+<ul>
+<li>IEEE 830-1998 Standard for Software Requirements Specifications</li>
+<li>ISO 9001:2015 Quality Management Systems</li>
+<li>Company Kaizen Policy Document</li>
+</ul>
+
+<h2>2. Overall Description</h2>
+
+<h3>2.1 Product Perspective</h3>
+<p>KaizenFlow is a standalone web application that replaces the existing paper-based Kaizen approval process. It integrates with:</p>
+<ul>
+<li>PostgreSQL database for data persistence</li>
+<li>Email servers for notifications</li>
+<li>WhatsApp Business API for mobile notifications</li>
+</ul>
+
+<h3>2.2 Product Functions</h3>
+<ul>
+<li>User authentication and role-based access control</li>
+<li>Kaizen request creation and management</li>
+<li>Multi-stage approval workflow automation</li>
+<li>Cross-department risk evaluation</li>
+<li>Cost-based approval routing</li>
+<li>Real-time notifications</li>
+<li>Comprehensive reporting and analytics</li>
+<li>Complete audit trail</li>
+</ul>
+
+<h3>2.3 User Classes and Characteristics</h3>
+<table>
+<tr><th>User Class</th><th>Description</th><th>Technical Expertise</th></tr>
+<tr><td>Initiator</td><td>Shop floor employees who create improvement requests</td><td>Basic computer skills</td></tr>
+<tr><td>Manager</td><td>Department managers who review and approve requests</td><td>Moderate computer skills</td></tr>
+<tr><td>HOD</td><td>Department heads with approval authority</td><td>Moderate computer skills</td></tr>
+<tr><td>AGM/GM</td><td>Senior executives for high-value approvals</td><td>Basic to moderate skills</td></tr>
+<tr><td>Administrator</td><td>IT staff managing the system</td><td>Advanced technical skills</td></tr>
+</table>
+
+<h3>2.4 Operating Environment</h3>
+<table>
+<tr><th>Component</th><th>Requirement</th></tr>
+<tr><td>Server OS</td><td>Linux (Ubuntu 20.04+ or similar)</td></tr>
+<tr><td>Database</td><td>PostgreSQL 14+</td></tr>
+<tr><td>Backend Runtime</td><td>Python 3.11+</td></tr>
+<tr><td>Frontend Runtime</td><td>Node.js 20+</td></tr>
+<tr><td>Client Browser</td><td>Chrome 90+, Firefox 88+, Edge 90+, Safari 14+</td></tr>
+<tr><td>Mobile Browser</td><td>Chrome Mobile, Safari Mobile</td></tr>
+</table>
+
+<h3>2.5 Design Constraints</h3>
+<ul>
+<li>Must support concurrent users (minimum 100)</li>
+<li>Must be accessible on both desktop and mobile devices</li>
+<li>Must comply with company security policies</li>
+<li>Must support Indian Rupee (INR) as primary currency</li>
+<li>Must maintain 99.5% uptime during business hours</li>
+</ul>
+
+<h2>3. Functional Requirements</h2>
+
+<h3>3.1 User Management</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-001</span> <strong>User Authentication</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall authenticate users using email and password credentials.</p>
+<ul>
+<li>Users shall be able to log in with email and password</li>
+<li>Passwords shall be hashed using bcrypt algorithm</li>
+<li>Session shall be managed using JWT tokens</li>
+<li>Tokens shall expire after 24 hours</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-002</span> <strong>Role-Based Access Control</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall restrict access based on user roles.</p>
+<ul>
+<li>6 roles: INITIATOR, MANAGER, HOD, AGM, GM, ADMIN</li>
+<li>Each role has predefined permissions</li>
+<li>Users can have only one role</li>
+<li>Users are assigned to one department</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-003</span> <strong>User Profile Management</strong></p>
+<p>Priority: <span class="priority-medium">Medium</span></p>
+<p>Administrators shall be able to create, update, and deactivate user accounts.</p>
+</div>
+
+<h3>3.2 Kaizen Request Management</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-010</span> <strong>Request Creation</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>Initiators shall be able to create new Kaizen requests with the following fields:</p>
+<table>
+<tr><th>Field</th><th>Type</th><th>Required</th><th>Validation</th></tr>
+<tr><td>Title</td><td>Text</td><td>Yes</td><td>5-200 characters</td></tr>
+<tr><td>Station Name</td><td>Text</td><td>Yes</td><td>2-100 characters</td></tr>
+<tr><td>Assembly Line</td><td>Text</td><td>No</td><td>Max 100 characters</td></tr>
+<tr><td>Issue Description</td><td>Text Area</td><td>Yes</td><td>10-2000 characters</td></tr>
+<tr><td>Poka-Yoke Description</td><td>Text Area</td><td>No</td><td>Max 1000 characters</td></tr>
+<tr><td>Program</td><td>Text</td><td>Yes</td><td>1-100 characters</td></tr>
+<tr><td>Customer Part Number</td><td>Text</td><td>Yes</td><td>1-50 characters</td></tr>
+<tr><td>Date of Origination</td><td>Date</td><td>Yes</td><td>Valid date</td></tr>
+<tr><td>Cost Estimate</td><td>Decimal</td><td>Yes</td><td>0 or positive number</td></tr>
+<tr><td>Feasibility Status</td><td>Enum</td><td>No</td><td>FEASIBLE/NOT_FEASIBLE</td></tr>
+<tr><td>Expected Benefits</td><td>Array</td><td>No</td><td>Multiple selection</td></tr>
+<tr><td>Process Addition</td><td>Boolean</td><td>No</td><td>true/false</td></tr>
+<tr><td>Manpower Addition</td><td>Boolean</td><td>No</td><td>true/false</td></tr>
+</table>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-011</span> <strong>Request ID Generation</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall automatically generate unique request IDs in format: KZN-YYYY-NNNN</p>
+<ul>
+<li>YYYY = Current year</li>
+<li>NNNN = Sequential 4-digit number, zero-padded</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-012</span> <strong>Draft Saving</strong></p>
+<p>Priority: <span class="priority-medium">Medium</span></p>
+<p>Users shall be able to save requests as drafts without submitting for approval.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-013</span> <strong>File Attachments</strong></p>
+<p>Priority: <span class="priority-medium">Medium</span></p>
+<p>Users shall be able to attach files to requests.</p>
+<ul>
+<li>Supported categories: PFMEA, Check Sheet, CRR, Photos, Other</li>
+<li>Maximum file size: 10MB per file</li>
+<li>Maximum 10 attachments per request</li>
+</ul>
+</div>
+
+<h3>3.3 Approval Workflow</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-020</span> <strong>Own Manager Approval</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>When a request is submitted, it shall be routed to the initiator's department manager.</p>
+<ul>
+<li>Manager can approve or reject</li>
+<li>Rejection requires a reason</li>
+<li>Comments are optional</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-021</span> <strong>Own HOD Approval</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>After manager approval, the request shall be routed to the department HOD.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-022</span> <strong>Cross-Department Manager Evaluation</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>After HOD approval, ALL managers from OTHER departments shall evaluate the request.</p>
+<ul>
+<li>4 manager evaluations required (5 departments - own department)</li>
+<li>Each manager answers department-specific questions</li>
+<li>Risk levels must be assigned (Low/Medium/High)</li>
+<li>Remarks mandatory for "No" answers or "High" risk</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-023</span> <strong>Cross-Department HOD Evaluation</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>After all managers accept, ALL HODs from OTHER departments shall evaluate.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-024</span> <strong>Cost-Based Escalation</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall automatically escalate based on cost thresholds:</p>
+<table>
+<tr><th>Condition</th><th>Escalation</th></tr>
+<tr><td>Cost > ₹50,000</td><td>Route to AGM</td></tr>
+<tr><td>Cost > ₹100,000</td><td>Route to GM after AGM</td></tr>
+<tr><td>Process Addition = true</td><td>Route to AGM</td></tr>
+<tr><td>Manpower Addition = true</td><td>Route to AGM</td></tr>
+</table>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-025</span> <strong>AGM Approval</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>AGM shall review requests that meet escalation criteria.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-026</span> <strong>GM Approval</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>GM shall provide final approval for requests exceeding ₹100,000.</p>
+</div>
+
+<h3>3.4 Department Evaluation Questions</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-030</span> <strong>Evaluation Questions</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>Each department shall have predefined evaluation questions:</p>
+<table>
+<tr><th>Department</th><th>Questions</th></tr>
+<tr><td>Maintenance</td><td>7 questions on equipment, safety, spare parts</td></tr>
+<tr><td>Production</td><td>5 questions on capacity, compatibility, downtime</td></tr>
+<tr><td>Assembly</td><td>6 questions on process flow, safety, cycle time</td></tr>
+<tr><td>Admin</td><td>4 questions on compliance, documentation</td></tr>
+<tr><td>Accounts</td><td>5 questions on budget, payments, ROI</td></tr>
+</table>
+</div>
+
+<h3>3.5 Notifications</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-040</span> <strong>Email Notifications</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall send email notifications for:</p>
+<ul>
+<li>New request requiring approval</li>
+<li>Request status changes</li>
+<li>Rejection with reason</li>
+<li>Final approval</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-041</span> <strong>WhatsApp Notifications</strong></p>
+<p>Priority: <span class="priority-medium">Medium</span></p>
+<p>The system shall optionally send WhatsApp notifications (configurable).</p>
+</div>
+
+<h3>3.6 Reports</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-050</span> <strong>Dashboard Summary</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall display a dashboard with:</p>
+<ul>
+<li>Total requests count</li>
+<li>Status distribution</li>
+<li>Department breakdown</li>
+<li>Pending actions for current user</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-051</span> <strong>Report Generation</strong></p>
+<p>Priority: <span class="priority-medium">Medium</span></p>
+<p>The system shall generate the following reports:</p>
+<ul>
+<li>Pipeline Funnel Report</li>
+<li>Department Breakdown Report</li>
+<li>TAT Analysis Report</li>
+<li>Cost Allocation Report</li>
+<li>Compliance Tracking Report</li>
+<li>Approval Metrics Report</li>
+</ul>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">FR-052</span> <strong>Report Export</strong></p>
+<p>Priority: <span class="priority-medium">Medium</span></p>
+<p>Users shall be able to export reports to CSV format.</p>
+</div>
+
+<h3>3.7 Audit Trail</h3>
+
+<div class="req-box">
+<p><span class="req-id">FR-060</span> <strong>Action Logging</strong></p>
+<p>Priority: <span class="priority-high">High</span></p>
+<p>The system shall log all user actions including:</p>
+<ul>
+<li>User ID</li>
+<li>Action type</li>
+<li>Timestamp</li>
+<li>Request ID (if applicable)</li>
+<li>Details/changes made</li>
+</ul>
+</div>
+
+<h2>4. Non-Functional Requirements</h2>
+
+<h3>4.1 Performance</h3>
+
+<div class="req-box">
+<p><span class="req-id">NFR-001</span> <strong>Response Time</strong></p>
+<p>Page load time shall not exceed 3 seconds for 90% of requests under normal load.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-002</span> <strong>Concurrent Users</strong></p>
+<p>The system shall support minimum 100 concurrent users without degradation.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-003</span> <strong>Database Performance</strong></p>
+<p>Database queries shall complete within 500ms for 95% of requests.</p>
+</div>
+
+<h3>4.2 Security</h3>
+
+<div class="req-box">
+<p><span class="req-id">NFR-010</span> <strong>Data Encryption</strong></p>
+<p>All data in transit shall be encrypted using TLS 1.2 or higher.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-011</span> <strong>Password Security</strong></p>
+<p>Passwords shall be hashed using bcrypt with minimum 10 rounds.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-012</span> <strong>Session Security</strong></p>
+<p>JWT tokens shall expire after 24 hours and include user role claims.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-013</span> <strong>Input Validation</strong></p>
+<p>All user inputs shall be validated and sanitized to prevent injection attacks.</p>
+</div>
+
+<h3>4.3 Reliability</h3>
+
+<div class="req-box">
+<p><span class="req-id">NFR-020</span> <strong>Availability</strong></p>
+<p>The system shall maintain 99.5% uptime during business hours (8 AM - 8 PM IST).</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-021</span> <strong>Data Backup</strong></p>
+<p>Database backups shall be performed daily with 30-day retention.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-022</span> <strong>Error Handling</strong></p>
+<p>The system shall gracefully handle errors and display user-friendly messages.</p>
+</div>
+
+<h3>4.4 Usability</h3>
+
+<div class="req-box">
+<p><span class="req-id">NFR-030</span> <strong>Responsive Design</strong></p>
+<p>The interface shall be usable on devices with screen widths from 320px to 2560px.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-031</span> <strong>Browser Compatibility</strong></p>
+<p>The system shall work on Chrome, Firefox, Edge, and Safari (latest 2 versions).</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-032</span> <strong>Accessibility</strong></p>
+<p>The system shall comply with WCAG 2.1 Level AA guidelines.</p>
+</div>
+
+<h3>4.5 Maintainability</h3>
+
+<div class="req-box">
+<p><span class="req-id">NFR-040</span> <strong>Code Standards</strong></p>
+<p>Code shall follow industry best practices and be properly documented.</p>
+</div>
+
+<div class="req-box">
+<p><span class="req-id">NFR-041</span> <strong>Logging</strong></p>
+<p>Application logs shall be maintained for debugging and monitoring.</p>
+</div>
+
+<h2>5. System Architecture</h2>
+
+<h3>5.1 Technology Stack</h3>
+<table>
+<tr><th>Layer</th><th>Technology</th></tr>
+<tr><td>Frontend</td><td>React 18, TypeScript, Tailwind CSS, Vite</td></tr>
+<tr><td>Backend</td><td>Django 5.2, Django REST Framework, Python 3.11</td></tr>
+<tr><td>Database</td><td>PostgreSQL 14+</td></tr>
+<tr><td>Authentication</td><td>JWT (djangorestframework-simplejwt)</td></tr>
+<tr><td>State Management</td><td>React Query, Context API</td></tr>
+<tr><td>Form Handling</td><td>React Hook Form, Zod validation</td></tr>
+</table>
+
+<h3>5.2 API Endpoints</h3>
+<table>
+<tr><th>Endpoint</th><th>Method</th><th>Description</th></tr>
+<tr><td>/api/auth/login/</td><td>POST</td><td>User authentication</td></tr>
+<tr><td>/api/auth/me/</td><td>GET</td><td>Current user info</td></tr>
+<tr><td>/api/departments/</td><td>GET</td><td>List departments</td></tr>
+<tr><td>/api/kaizen/</td><td>GET/POST</td><td>List/create requests</td></tr>
+<tr><td>/api/kaizen/{id}/</td><td>GET/PUT</td><td>Request details</td></tr>
+<tr><td>/api/approvals/...</td><td>POST</td><td>Approval actions</td></tr>
+<tr><td>/api/reports/...</td><td>GET</td><td>Report data</td></tr>
+<tr><td>/api/audit/logs/</td><td>GET</td><td>Audit logs</td></tr>
+</table>
+
+<h2>6. Appendices</h2>
+
+<h3>Appendix A: Glossary</h3>
+<p>See Section 1.3 for definitions.</p>
+
+<h3>Appendix B: Revision History</h3>
+<table>
+<tr><th>Version</th><th>Date</th><th>Author</th><th>Changes</th></tr>
+<tr><td>1.0</td><td>December 2025</td><td>KaizenFlow Team</td><td>Initial release</td></tr>
+</table>
+
+</body>
+</html>

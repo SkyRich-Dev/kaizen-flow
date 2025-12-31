@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>KaizenFlow - Feature List</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; margin: 40px; line-height: 1.6; }
+h1 { color: #1a365d; border-bottom: 2px solid #1a365d; padding-bottom: 10px; }
+h2 { color: #2d3748; margin-top: 30px; }
+h3 { color: #4a5568; }
+table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+th { background-color: #f0f4f8; }
+.feature-category { background-color: #edf2f7; padding: 15px; margin: 20px 0; border-left: 4px solid #3182ce; }
+ul { margin: 10px 0; }
+li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>KaizenFlow - Risk Assessment & Approval System</h1>
+<h2>Feature List Document</h2>
+<p><strong>Version:</strong> 1.0 | <strong>Date:</strong> December 2025</p>
+
+<hr>
+
+<h2>1. User Management Features</h2>
+
+<div class="feature-category">
+<h3>1.1 Authentication & Authorization</h3>
+<ul>
+<li>Secure JWT-based user authentication</li>
+<li>Role-based access control (RBAC)</li>
+<li>Session management with automatic token refresh</li>
+<li>Password-protected user accounts</li>
+</ul>
+
+<h3>1.2 User Roles</h3>
+<table>
+<tr><th>Role</th><th>Description</th><th>Permissions</th></tr>
+<tr><td>INITIATOR</td><td>Creates kaizen requests</td><td>Create, view own requests, track status</td></tr>
+<tr><td>MANAGER</td><td>Department Manager</td><td>Approve own dept requests, evaluate cross-dept requests</td></tr>
+<tr><td>HOD</td><td>Head of Department</td><td>Final dept approval, cross-dept HOD evaluation</td></tr>
+<tr><td>AGM</td><td>Assistant General Manager</td><td>Approve requests >₹50k or with process/manpower additions</td></tr>
+<tr><td>GM</td><td>General Manager</td><td>Final approval for requests >₹100k</td></tr>
+<tr><td>ADMIN</td><td>System Administrator</td><td>Full system access, user management, settings</td></tr>
+</table>
+</div>
+
+<h2>2. Kaizen Request Management</h2>
+
+<div class="feature-category">
+<h3>2.1 Request Creation</h3>
+<ul>
+<li>Comprehensive request form with all required fields</li>
+<li>Station/line/program identification</li>
+<li>Issue description and poka-yoke details</li>
+<li>Cost estimation with currency support (INR)</li>
+<li>Expected benefits selection (multiple choice)</li>
+<li>Effect of changes documentation</li>
+<li>File attachment support (PFMEA, Check Sheets, CRR, Photos)</li>
+<li>Draft saving capability</li>
+</ul>
+
+<h3>2.2 Request Tracking</h3>
+<ul>
+<li>Unique request ID generation (KZN-YYYY-NNNN)</li>
+<li>Real-time status tracking</li>
+<li>Complete audit trail</li>
+<li>Request history and timeline view</li>
+<li>Filtering and search capabilities</li>
+</ul>
+
+<h3>2.3 Request Fields</h3>
+<table>
+<tr><th>Field</th><th>Description</th><th>Required</th></tr>
+<tr><td>Title</td><td>Brief description of the kaizen</td><td>Yes</td></tr>
+<tr><td>Station Name</td><td>Work station identifier</td><td>Yes</td></tr>
+<tr><td>Assembly Line</td><td>Production line reference</td><td>No</td></tr>
+<tr><td>Issue Description</td><td>Detailed problem statement</td><td>Yes</td></tr>
+<tr><td>Poka-Yoke Description</td><td>Error-proofing mechanism</td><td>No</td></tr>
+<tr><td>Program</td><td>Product/program reference</td><td>Yes</td></tr>
+<tr><td>Customer Part Number</td><td>Part identification</td><td>Yes</td></tr>
+<tr><td>Cost Estimate</td><td>Estimated implementation cost</td><td>Yes</td></tr>
+<tr><td>Feasibility Status</td><td>Technical feasibility assessment</td><td>No</td></tr>
+<tr><td>Expected Benefits</td><td>Anticipated improvements</td><td>No</td></tr>
+<tr><td>Process Addition Required</td><td>New process flag</td><td>No</td></tr>
+<tr><td>Manpower Addition Required</td><td>New staff flag</td><td>No</td></tr>
+</table>
+</div>
+
+<h2>3. Approval Workflow Features</h2>
+
+<div class="feature-category">
+<h3>3.1 Multi-Stage Approval Process</h3>
+<table>
+<tr><th>Stage</th><th>Approver</th><th>Action Required</th></tr>
+<tr><td>1. Draft</td><td>Initiator</td><td>Submit request</td></tr>
+<tr><td>2. Own Manager</td><td>Department Manager</td><td>Review & approve/reject</td></tr>
+<tr><td>3. Own HOD</td><td>Department HOD</td><td>Department approval</td></tr>
+<tr><td>4. Cross-Managers</td><td>All other dept Managers</td><td>Risk evaluation (4 approvals needed)</td></tr>
+<tr><td>5. Cross-HODs</td><td>All other dept HODs</td><td>Risk evaluation (4 approvals needed)</td></tr>
+<tr><td>6. AGM</td><td>AGM</td><td>Required if cost >₹50k or process/manpower additions</td></tr>
+<tr><td>7. GM</td><td>GM</td><td>Required if cost >₹100k</td></tr>
+<tr><td>8. Final</td><td>System</td><td>Approved/Rejected status</td></tr>
+</table>
+
+<h3>3.2 Department Risk Evaluation</h3>
+<ul>
+<li>Mandatory risk assessment checklists per department</li>
+<li>27 evaluation questions across 5 departments</li>
+<li>Risk level rating (Low/Medium/High)</li>
+<li>Mandatory remarks for "No" answers or high-risk items</li>
+<li>Acceptance/rejection tracking per department</li>
+</ul>
+
+<h3>3.3 Cost-Based Routing</h3>
+<ul>
+<li>Automatic escalation based on cost thresholds</li>
+<li>₹0 - ₹50,000: HOD approval sufficient</li>
+<li>₹50,001 - ₹100,000: Requires AGM approval</li>
+<li>Above ₹100,000: Requires GM approval</li>
+<li>Process/manpower additions: Mandatory AGM escalation</li>
+</ul>
+</div>
+
+<h2>4. Department Management</h2>
+
+<div class="feature-category">
+<h3>4.1 Departments</h3>
+<table>
+<tr><th>Department</th><th>Code</th><th>Evaluation Questions</th></tr>
+<tr><td>Maintenance</td><td>MAINTENANCE</td><td>7 questions</td></tr>
+<tr><td>Production</td><td>PRODUCTION</td><td>5 questions</td></tr>
+<tr><td>Assembly</td><td>ASSEMBLY</td><td>6 questions</td></tr>
+<tr><td>Admin</td><td>ADMIN</td><td>4 questions</td></tr>
+<tr><td>Accounts</td><td>ACCOUNTS</td><td>5 questions</td></tr>
+</table>
+
+<h3>4.2 Department Features</h3>
+<ul>
+<li>Department-specific evaluation checklists</li>
+<li>Cross-department collaboration</li>
+<li>Department-wise reporting</li>
+<li>Role assignment per department</li>
+</ul>
+</div>
+
+<h2>5. Reports & Analytics</h2>
+
+<div class="feature-category">
+<h3>5.1 Dashboard Summary</h3>
+<ul>
+<li>Total requests count</li>
+<li>Status distribution (Draft, Pending, Approved, Rejected)</li>
+<li>Department-wise breakdown</li>
+<li>Cost analytics</li>
+</ul>
+
+<h3>5.2 Report Categories</h3>
+<table>
+<tr><th>Report</th><th>Description</th></tr>
+<tr><td>Pipeline Funnel</td><td>Requests at each workflow stage</td></tr>
+<tr><td>Department Breakdown</td><td>Requests per department with status</td></tr>
+<tr><td>TAT Analysis</td><td>Turn-around time metrics</td></tr>
+<tr><td>Cost Allocation</td><td>Cost distribution and estimates</td></tr>
+<tr><td>Compliance Tracking</td><td>SLA adherence and overdue items</td></tr>
+<tr><td>Approval Metrics</td><td>Approver performance analytics</td></tr>
+</table>
+
+<h3>5.3 Export Features</h3>
+<ul>
+<li>CSV export for all reports</li>
+<li>Role-based data filtering</li>
+<li>Date range filtering</li>
+<li>Department filtering</li>
+</ul>
+</div>
+
+<h2>6. Audit & Compliance</h2>
+
+<div class="feature-category">
+<h3>6.1 Audit Trail</h3>
+<ul>
+<li>Complete action logging</li>
+<li>User activity tracking</li>
+<li>Timestamp for all actions</li>
+<li>IP address logging</li>
+<li>Change history per request</li>
+</ul>
+
+<h3>6.2 Compliance Features</h3>
+<ul>
+<li>Mandatory field validation</li>
+<li>Approval sequence enforcement</li>
+<li>Document retention</li>
+<li>Access control logging</li>
+</ul>
+</div>
+
+<h2>7. Notification System</h2>
+
+<div class="feature-category">
+<h3>7.1 Notification Channels</h3>
+<ul>
+<li>Email notifications (configurable)</li>
+<li>WhatsApp integration (configurable)</li>
+<li>In-app notifications</li>
+</ul>
+
+<h3>7.2 Notification Events</h3>
+<ul>
+<li>New request submission</li>
+<li>Approval required alerts</li>
+<li>Status change notifications</li>
+<li>Rejection notifications with reasons</li>
+<li>Escalation alerts</li>
+<li>Overdue reminders</li>
+</ul>
+</div>
+
+<h2>8. Technical Features</h2>
+
+<div class="feature-category">
+<h3>8.1 Frontend</h3>
+<ul>
+<li>React 18 with TypeScript</li>
+<li>Responsive design (mobile-friendly)</li>
+<li>Modern UI with Tailwind CSS</li>
+<li>Real-time updates with React Query</li>
+<li>Form validation with Zod</li>
+</ul>
+
+<h3>8.2 Backend</h3>
+<ul>
+<li>Django REST Framework</li>
+<li>PostgreSQL database</li>
+<li>JWT authentication</li>
+<li>RESTful API design</li>
+<li>Secure password hashing</li>
+</ul>
+
+<h3>8.3 Security</h3>
+<ul>
+<li>HTTPS encryption</li>
+<li>JWT token authentication</li>
+<li>Role-based access control</li>
+<li>Input validation and sanitization</li>
+<li>SQL injection prevention</li>
+<li>XSS protection</li>
+</ul>
+</div>
+
+</body>
+</html>
